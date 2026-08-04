@@ -1,7 +1,8 @@
-<center>![image](./theme_figures/fourinstitute_logos.png){width="400"}</center>
-<center>
-# Unlock the Power of Pangenome Graphs
-</center>
+<div align="center">
+  <img src="./theme_figures/fourinstitute_logos.png" width="400">
+</div>
+
+<h1 align="center">Unlock the Power of Pangenome Graphs</h1>
 
 ![bacterial-pangenome](theme_figures/Genomegraphs_theme_figure130NM2D_20230703_small.png).
 
