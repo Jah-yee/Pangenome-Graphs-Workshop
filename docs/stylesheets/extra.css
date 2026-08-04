@@ -1027,3 +1027,9 @@
   -webkit-mask-image: var(--md-admonition-icon--html5);
           mask-image: var(--md-admonition-icon--html5);
 }
+
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
