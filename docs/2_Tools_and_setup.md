@@ -23,10 +23,10 @@
     All of the required software is pre-installed and configured as modules. We will load them as needed  
     
     - pggb/0.5.3-Miniconda3
-    - SAMtools
-    - Mash/2.3-GCC-11.3.0
+    - SAMtools/1.21-GCC-12.3.0
+    - Mash/2.3-GCC-12.3.0
     - Circlator/1.5.5-gimkl-2022a-Python-3.10.5
-    - vg/1.46.0
+    - vg/1.76.1
     
 
 ??? circle-info "Running the pggb workflow locally"

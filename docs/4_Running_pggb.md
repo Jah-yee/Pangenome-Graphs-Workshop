@@ -18,7 +18,7 @@ Create an index for the sequence using SAMtools and check.
 
     ```bash    
     module purge
-    module load SAMtools/1.16.1-GCC-11.3.0
+    module load SAMtools/1.21-GCC-12.3.0
     ```
     ```bash
     samtools faidx 5NM.fa
@@ -78,7 +78,7 @@ More details at https://github.com/pangenome/PanSN-spec
 
     ```bash
     module purge
-    module load Mash/2.3-GCC-11.3.0
+    module load Mash/2.3-GCC-12.3.0
     ```
     ```bash
     mash triangle 5NM.fa > 5NM.fa_mash

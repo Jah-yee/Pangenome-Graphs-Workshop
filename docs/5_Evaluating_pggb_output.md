@@ -46,7 +46,7 @@
 
     ```bash
     
-    head 5NM*.gfa |less -S 
+    head 5NM*.gfa | less -S 
     ```
     ??? success "Output"
         ```bash 
@@ -63,7 +63,7 @@
         ```
     ```bash
     
-    tail 5NM*.gfa |less -S 
+    tail 5NM*.gfa | less -S 
     ```
     ??? success "output"
         ```bash 
