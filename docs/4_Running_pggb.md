@@ -42,8 +42,33 @@ Inspect the index.
         NZ_CP020423.2	2244886	9204558	60	61
         ```
 
+## Conform with PanSN naming
 
+PanSN (Pangenome Sequence Naming) is a convention for naming sequences in a pangenome: sample#haplotype#contig
+This embeds which sample and haplotype a contig belongs to in the sequence name, instead of being tracked in a separate metadata file. 
+Every tool downstream (pggb, vg, odgi) can parse this information, and the information is maintained across most common file formats (FASTA, GFA, VCF).
+![pansn](theme_figures/pansn_naming_fields.png)
+More details at https://github.com/pangenome/PanSN-spec
 
+!!! terminal "code"
+    ```bash
+	awk '/^>/{name=substr($1,2); sub(/#1$/, "", name); print ">"name"#1"; next} {print}' 5NM.fa > tmp && mv tmp 5NM.fa
+	samtools faidx 5NM.fa
+    ```
+    
+    ```bash
+    more 5NM.fa.fai
+    ```
+
+    !!! success "Output"
+        
+        ```
+        NC_003112.2#1	    2272360	60	    60	61
+        NC_017518.1#1	    2248966	2310357	60	61
+        NZ_CP007668.1#1	2324822	4596878	60	61
+        NZ_CP016880.1#1	2207174	6960511	60	61
+        NZ_CP020423.2#1	2244886	9204558	60	61
+        ```
 
 ## Running PGGB
 
