@@ -213,32 +213,27 @@
 
 
 
-### Setting up your project directory and downloading the dataset
+### Setting up your project directory and linking the dataset
+
+This workshop is run on the REANNZ HPC. Before the workshop, the instructors set up a unique dir for each learner with a copy of the dataset. 
 
 !!! terminal "code"
-    - Create a new directory under your home folder and change to that directory.
+    - Make sure you are in your home directory
     ```bash
-    mkdir ~/pg_workshop
+    cd ~
     ```
+    - Create a symbolic link to the `pg_workshop` dir that has been uniquely created for you:
+    ```bash
+    ln -s /nesi/nobackup/nesi02659/pg_workshop/users/${USER}/
     ```
+    - You should now have a dir called `pg_workshop` in your home dir. Move into this directory:
+    ```bash
     cd ~/pg_workshop
     ```
-    - `~/pg_workshop` will be your working directory
-    - Keep a note of the absolute path of your working directory
-    ```
-    pwd
-    ```
-    !!! success "Output"
 
-        ```
-        /home/<YOUR_USER_ID>/pg_workshop
-        ```
-    - Please download the dataset. 
-    ```bash    
+
+??? circle-info "Download this dataset on your local or a different machine"
+
+    ```bash
     git clone https://github.com/ZoeYang2020/dataset_for_pg_workshop
-    ```
-    
-    - Copy the 5NM.fa and  dataset to your working directory (To keep the filenames simple, we have renamed the 5NMfs.fa to 5NM.fa for this workshop)
-    ```
-    cp ./dataset_for_pg_workshop/5NM.fa ./
     ```
