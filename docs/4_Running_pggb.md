@@ -18,7 +18,7 @@ Create an index for the sequence using SAMtools and check.
 
     ```bash    
     module purge
-    module load SAMtools/1.16.1-GCC-11.3.0
+    module load SAMtools/1.21-GCC-12.3.0
     ```
     ```bash
     samtools faidx 5NM.fa
@@ -42,8 +42,33 @@ Inspect the index.
         NZ_CP020423.2	2244886	9204558	60	61
         ```
 
+## Conform with PanSN naming
 
+PanSN (Pangenome Sequence Naming) is a convention for naming sequences in a pangenome: sample#haplotype#contig
+This embeds which sample and haplotype a contig belongs to in the sequence name, instead of being tracked in a separate metadata file. 
+Every tool downstream (pggb, vg, odgi) can parse this information, and the information is maintained across most common file formats (FASTA, GFA, VCF).
+![pansn](theme_figures/pansn_naming_fields.png)
+More details at https://github.com/pangenome/PanSN-spec
 
+!!! terminal "code"
+    ```bash
+	awk '/^>/{name=substr($1,2); sub(/#1$/, "", name); print ">"name"#1#1"; next} {print}' 5NM.fa > tmp && mv tmp 5NM.fa	
+	samtools faidx 5NM.fa
+    ```
+    
+    ```bash
+    more 5NM.fa.fai
+    ```
+
+    !!! success "Output"
+        
+        ```
+		NC_003112.2#1#1 2272360 17      60      61
+		NC_017518.1#1#1 2248966 2310267 60      61
+		NZ_CP007668.1#1#1       2324822 4596735 60      61
+		NZ_CP016880.1#1#1       2207174 6960324 60      61
+		NZ_CP020423.2#1#1       2244886 9204304 60      61
+        ```
 
 ## Running PGGB
 
@@ -53,7 +78,7 @@ Inspect the index.
 
     ```bash
     module purge
-    module load Mash/2.3-GCC-11.3.0
+    module load Mash/2.3-GCC-12.3.0
     ```
     ```bash
     mash triangle 5NM.fa > 5NM.fa_mash
@@ -68,11 +93,11 @@ Inspect the index.
 
         ```
                 5
-        NC_003112.2
-        NC_017518.1     0.0152404
-        NZ_CP007668.1   0.0149234       0.00635099
-        NZ_CP016880.1   0.0178909       0.0171265       0.0170111
-        NZ_CP020423.2   0.0190552       0.0194352       0.0185579       0.0106974
+        NC_003112.2#1#1
+        NC_017518.1#1#1     0.0152404
+        NZ_CP007668.1#1#1   0.0149234       0.00635099
+        NZ_CP016880.1#1#1   0.0178909       0.0171265       0.0170111
+        NZ_CP020423.2#1#1   0.0190552       0.0194352       0.0185579       0.0106974
         ```
 
 
@@ -161,23 +186,13 @@ Inspect the index.
         Use wfmash, seqwish, smoothxg, odgi, gfaffix, and vg to build, project and display a pangenome graph.
         ```
 
-### Construct pangenome graph for 5NM genomes with `-s 2000`, `-p 94`, `-k 19  or -k 35`
+### Construct pangenome graph for 5NM genomes with `-s 2000`, `-p 94`, and `-k 19`
 
 !!! terminal "code"
 
-     ```bash
-     module purge
-     module load pggb/0.5.3-Miniconda3
-     ```
-
-    - Execute `pggb`, set `-s 2000` and `-p 94`
+    Execute `pggb`, set `-s 2000` and `-p 94`
     ```
-    pggb -i 5NM.fa -s 2000 -p 94 -n 5 -t 16 -S -m -o 5NM_2Kb94 -V 'NC_017518.1:#'
-    ```
-
-    - let's Execute pggb again, using the same setting `-s 2000` and `-p 94`, but increase `-k` to `35`
-    ```bash
-    pggb -i 5NM.fa -s 2000 -p 94 -n 5 -t 16 -S -m -k 35 -o 5NM_2Kb94_k35 -V 'NC_017518.1:#'
+    pggb -i 5NM.fa -s 2000 -p 94 -n 5 -t 16 -S -m -k 19 -o 5NM_2Kb94 -V 'NC_017518.1:#'
     ```
 
 <hr>

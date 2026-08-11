@@ -46,41 +46,39 @@
 
     ```bash
     
-    head 5NM*.gfa |less -S 
+    head 5NM*.gfa | less -S 
     ```
     ??? success "Output"
         ```bash 
-        H       VN:Z:1.0
-        S       1       ATCCGCCCGACCAAGAAGGCATTTTGGAACTACACATCCGCAGGCGCAAAAACGGTGTCTGCTCGGAAATGATTTTCGGCAGCGAACCCAAAGTCAAAGAAAAAGGCATCGTCCG
-        L       1       +       4       +       0M
-        S       2       CGAAATTGTTTCTTTGTCCGTTTGCGATGTTTTTTAGCTTTGGGGCAGTCGAGAATCACGCCGCTCGTTCGGCTTGTGTAACTGATGTTTTTATGCCCCCTTATCTAACAGGGGG
-        L       2       +       133478  +       0M
-        S       3       TCCATTGGGGCAAGGCCGCCGCGCCGACCGGTTTGGCTTCCCACACTTCCCCCTTTGCCGCCAATGCGGCAAACCATTTGGACTGGAGCTGGGTTTTCTCCAGTTTGGGCAGCAA
-        L       3       +       175915  +       0M
-        S       4       G
-        L       4       +       5       +       0M
-        S       5       CCATCGGACGCTTGGACATCAACACCAGCGGACTTCTGATTCT
+		H       VN:Z:1.0
+		S       1       GTGGCTAAAACATATTTATTGACTGCATTGATAATGTCTATGACAATCTCTGGATGTCAAGTCATCCATGCCAATCA>
+		L       1       +       2       +       0M
+		L       1       +       3       +       0M
+		S       2       C
+		L       2       +       4       +       0M
+		S       3       T
+		L       3       +       4       +       0M
+		S       4       CGAACAAAAGCAGGTGATTGCAAGTGATTTTATGGTAGCGTCAGCCAATCCATTAGCAACACAAGCTGGCTATGATA>
+		L       4       +       6       +       0M
         ```
     ```bash
     
-    tail 5NM*.gfa |less -S 
+    tail 5NM*.gfa | less -S 
     ```
     ??? success "output"
         ```bash 
-        S       246216  G
-        L       246216  +       246135  +       0M
-        L       246216  +       246217  +       0M
-        S       246217  GAC
-        L       246217  +       246136  +       0M
-        P       NC_003112.2     85316+,85318+,85319+,85321+,85322+,85323+,85325+,85327+,85328+,85330+,85331+,85333+,85334+,85336+,85337+,85
-        P       NC_017518.1     85316+,85317+,85319+,85320+,85322+,85323+,85325+,85326+,85328+,85329+,85331+,85332+,85334+,85335+,85337+,85
-        P       NZ_CP007668.1   1+,4+,5+,6+,8+,9+,11+,12+,14+,15+,17+,18+,20+,21+,23+,25+,26+,27+,29+,31+,32+,34+,35+,37+,38+,39+,41+,43+,4
-        P       NZ_CP016880.1   2+,133478+,133479+,133481+,133482+,133483+,133485+,133486+,133488+,133489+,133490+,133492+,133493+,133495+,
-        P       NZ_CP020423.2   3+,175915+,175916+,175918+,175919+,175921+,175922+,175924+,175925+,175926+,175928+,175929+,175931+,175932+,
-        ```
+		S       245456  A
+		L       245456  +       245458  +       0M
+		S       245457  G
+		L       245457  +       245458  +       0M
+		S       245458  TCGGCCAACCTTTCCACAGCTTTGGGTTAATGGTGAGTTAATCGGTGGTAGTGATATTATCCTACAAATGTACCAATCAGGTGAG>
+		P       NC_003112.2#1#1   1+,2+,4+,5+,7+,8+,10+,12+,13+,14+,16+,18+,19+,21+,22+,23+,25+,26+,28+,29+,31+>
+		P       NC_017518.1#1#1   1+,3+,4+,5+,7+,8+,10+,11+,13+,14+,16+,17+,19+,20+,22+,24+,25+,27+,28+,30+,31+>
+		P       NZ_CP007668.1#1#1 1+,3+,4+,5+,7+,8+,10+,11+,13+,14+,16+,17+,19+,20+,22+,24+,25+,27+,28+,30+,31+>
+		P       NZ_CP016880.1#1#1 1+,2+,4+,6+,7+,9+,10+,12+,13+,15+,16+,18+,19+,21+,22+,24+,25+,27+,28+,30+,31+>
+		P       NZ_CP020423.2#1#1 1+,2+,4+,6+,7+,9+,10+,12+,13+,14+,16+,18+,19+,21+,22+,24+,25+,27+,28+,30+,31+>        ```
     ??? clipboard-question "what does S, L, P mean"
         `S` means DNA segments, `L` means links between notes, and `P` means paths
-
 
 
 ## Pangenome graph visualization using ODGI 
@@ -181,12 +179,12 @@ This shows a 1D rendering of the built pangenome graph where the paths are color
 
     - Compute the layout first
     ```bash
-    odgi layout -i graph.og -o graph.layout.lay -P -t 16
+    odgi layout -i ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og -o ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og -P -t 16
     ```
 
     - Retrieve the image
     ```bash
-    odgi draw -i graph.og -c graph.layout.lay -p graph.2D.png 
+    odgi draw -i ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og -c ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og -p ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og
     ```
 
 ??? "Generate graph 2D visualization using gfaestus"
@@ -200,8 +198,6 @@ This shows a 1D rendering of the built pangenome graph where the paths are color
 
     ![2D visulizatio by gfaestus ](theme_figures/5NM_2k94_gfaestus.png)
 
-
-
 ## Check the statistics statistics for both the seqwish and smoothxg graphs
 !!! info ""
 
@@ -211,12 +207,3 @@ This shows a 1D rendering of the built pangenome graph where the paths are color
 |:-----                               |----------:|-------:|-------:|------------|-----------:|----:|----:|----:|----:|----:|
 |seqwish  |3213544	|122575	|164967	|5	|1	|796617	|815725	|800622	|800480	|100|
 |smooth	  |2964772	|246887	|332917	|5	|1	|745161	|757008	|737404	|725099 |100|
-
-#### 5NM -s 2000, -p 94, -k 35
-
-| Sample Name                         | Length    | Nodes  | Edges  |Paths       |Components | A   |C    |T    |G    |N   |
-|:-----                               |----------:|-------:|-------:|------------|-----------:|----:|----:|----:|----:|----:|
-|seqwish  |3488559 |92375	|124130	|5	|1	|861063	|890024	|863665	|873707	|100|
-|smooth	  |2998035 |241280	|325338	|5	|1	|752650	|765699	|745759	|733827 |100|
-
-
