@@ -26,7 +26,7 @@
     - SAMtools/1.21-GCC-12.3.0
     - Mash/2.3-GCC-12.3.0
     - Circlator/1.5.5-gimkl-2022a-Python-3.10.5
-    - vg/1.76.1
+    - vg/1.46.0
     
 
 ??? circle-info "Running the pggb workflow locally"
