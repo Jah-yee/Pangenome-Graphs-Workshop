@@ -35,11 +35,11 @@ Inspect the index.
     !!! success "Output"
         
         ```
-        NC_003112.2	    2272360	60	    60	61
-        NC_017518.1	    2248966	2310357	60	61
-        NZ_CP007668.1	2324822	4596878	60	61
-        NZ_CP016880.1	2207174	6960511	60	61
-        NZ_CP020423.2	2244886	9204558	60	61
+		NC_003112.2     2272360 60      80      81
+		NC_017518.1     2248966 2300889 80      81
+		NZ_CP007668.1   2324822 4578040 80      81
+		NZ_CP016880.1   2207174 6931986 80      81
+		NZ_CP020423.2   2244886 9166836 80      81
         ```
 
 ## Conform with PanSN naming
@@ -63,11 +63,11 @@ More details at https://github.com/pangenome/PanSN-spec
     !!! success "Output"
         
         ```
-		NC_003112.2#1#1 2272360 17      60      61
-		NC_017518.1#1#1 2248966 2310267 60      61
-		NZ_CP007668.1#1#1       2324822 4596735 60      61
-		NZ_CP016880.1#1#1       2207174 6960324 60      61
-		NZ_CP020423.2#1#1       2244886 9204304 60      61
+		NC_003112.2#1#1 2272360 17      80      81
+		NC_017518.1#1#1 2248966 2300799 80      81
+		NZ_CP007668.1#1#1       2324822 4577897 80      81
+		NZ_CP016880.1#1#1       2207174 6931799 80      81
+		NZ_CP020423.2#1#1       2244886 9166582 80      81
         ```
 
 ## Running PGGB
@@ -120,7 +120,7 @@ More details at https://github.com/pangenome/PanSN-spec
     ```
     
     ??? success "Output"
-        ```bash 
+        ```text 
         ERROR: mandatory arguments -i and -n
         ERROR: -n must be greater than or equal to 2
         usage: /usr/local/bin/pggb -i <input-fasta> -n <n-haplotypes> [options]
