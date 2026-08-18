@@ -93,7 +93,7 @@ This image shows a 1D rendering of the built pangenome graph. The graph nodes ar
 !!! terminal-2 "ODGI Compressed 1D visualization "
 
     ```bash
-    odgi viz -i ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og -o ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og.viz_O_multiqc_1.png -x 1500 -y 500 -a 10 -O -I Consensus_  
+    odgi viz -i ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og -o ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og.viz_O_multiqc.png -x 1500 -y 500 -a 10 -O -I Consensus_  
     ```
 
 
@@ -107,7 +107,7 @@ This image shows a 1D rendering of the built pangenome graph. The graph nodes ar
 !!! terminal-2 "ODGI Compressed 1D visualization"
 
     ```bash
-    odgi viz -i ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og -o ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og.viz_multiqc_1.png -x 1500 -y 500 -a 10 -I Consensus_  
+    odgi viz -i ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og -o ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og.viz_multiqc.png -x 1500 -y 500 -a 10 -I Consensus_  
     ```
 
 
@@ -122,7 +122,7 @@ This shows a 1D rendering of the built pangenome graph where the paths are color
 !!! terminal-2 "ODGI Compressed 1D visualization"
 
     ```bash
-    odgi viz -i ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og -o ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og.viz_pos_multiqc_1.png -x 1500 -y 500 -a 10 -u -d -I Consensus_ 
+    odgi viz -i ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og -o ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og.viz_pos_multiqc.png -x 1500 -y 500 -a 10 -u -d -I Consensus_ 
     ```
 
 
@@ -135,7 +135,7 @@ This image shows a 1D rendering of the built pangenome graph where the paths are
 !!! terminal-2 "ODGI Compressed 1D visualization"
 
     ```bash
-    odgi viz -i ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og -o ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og.viz_inv_multiqc_1.png -x 1500 -y 500 -a 10 -z -I Consensus_
+    odgi viz -i ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og -o ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og.viz_inv_multiqc.png -x 1500 -y 500 -a 10 -z -I Consensus_
     ```
  
 
@@ -149,7 +149,7 @@ This shows a 1D rendering of the built pangenome graph where the paths are color
 !!! terminal "ODGI Compressed 1D visualization "
 
     ```bash
-    odgi viz -i ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og -o ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og.viz_depth_multiqc_1.png -x 1500 -y 500 -a 10 -m -I Consensus_ 
+    odgi viz -i ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og -o ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og.viz_depth_multiqc.png -x 1500 -y 500 -a 10 -m -I Consensus_ 
     ```
 
 
@@ -164,14 +164,14 @@ This shows a 1D rendering of the built pangenome graph where the paths are color
 !!! terminal-2 "ODGI Compressed 1D visualization "
 
     ```bash
-    odgi viz -i ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og -o ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og.viz_uncalled_multiqc_1.png -x 1500 -y 500 -a 10 -N -I Consensus_ 
+    odgi viz -i ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og -o ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og.viz_uncalled_multiqc.png -x 1500 -y 500 -a 10 -N -I Consensus_ 
     ```
 
 
 ### ODGI 2D drawing 
 !!! info ""
 
-<center>![ODGI 2D visualization](theme_figures/5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og.lay.draw.png)</center>
+![ODGI 2D visualization](theme_figures/5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og.lay.draw.png)</center>
 
 
 
@@ -179,12 +179,12 @@ This shows a 1D rendering of the built pangenome graph where the paths are color
 
     - Compute the layout first
     ```bash
-    odgi layout -i ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og -o ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og -P -t 16
+    odgi layout -i ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og -o ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og.lay -P -t 16
     ```
 
     - Retrieve the image
     ```bash
-    odgi draw -i ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og -c ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og -p ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og
+    odgi draw -i ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og -c ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og.lay -p ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og.lay.draw.png
     ```
 
 ??? "Generate graph 2D visualization using gfaestus"
