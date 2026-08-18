@@ -93,10 +93,10 @@ The normalization process in PGGB involves several steps, which may vary dependi
 The overall structure of PGGB's output graph is defined by three parameters: genome number (`-n`), segment length (`-s`), and pairwise identity (`-p`). 
 
 - `-n` : Genome number.
-- `-s` : Segment length defines the seed length used by the "MashMap3" homology mapper in wfmash.
-- `-p` : The pairwise identity (-p) is the minimum allowed pairwise identity between seeds. **default, 90**
+- `-s` : Segment length defines the seed length used by the "MashMap3" homology mapper in wfmash. **default: 5000**
+- `-p` : The pairwise identity (-p) is the minimum allowed pairwise identity between seeds. **default: 90**
 
-- `-k` : An additional parameter, can also greatly affect graph structure by pruning matches shorter than a given threshold from the initial graph model. In effect, **-k N removes any match shorter than Nbp** from the initial alignment. This filter removes potentially ambiguous pairwise alignments from consideration in establishing the initial scaffold of the graph. **default 19**
+- `-k` : An additional parameter, can also greatly affect graph structure by pruning matches shorter than a given threshold from the initial graph model. In effect, **-k N removes any match shorter than Nbp** from the initial alignment. This filter removes potentially ambiguous pairwise alignments from consideration in establishing the initial scaffold of the graph. **default: 19**
 
 
 ### Other parameters for executing PGGB
