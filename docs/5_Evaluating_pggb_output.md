@@ -39,6 +39,25 @@
         multiqc_report.html
         ```
 
+## Check the statistics statistics for both the seqwish and smoothxg graphs
+!!! info ""
+
+    ```bash
+	head -n5  5NM.fa.fefc7f5.417fcdf.seqwish.og.stats.yaml
+	head -n5  5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og.stats.yaml
+    ```
+
+    - Collate graph stats
+    ```bash
+    printf "Sample\tLength\tNodes\tEdges\tPaths\n"; awk 'FNR==1{if(NR>1) print name,len,nodes,edges,paths,comp; name=(FILENAME~/seqwish/?"seqwish":FILENAME~/smooth/?"smooth":FILENAME)}; /^length:/{len=$2} /^nodes:/{nodes=$2} /^edges:/{edges=$2} /^paths:/{paths=$2}; END{print name,len,nodes,edges,paths}' OFS='\t' *.og.stats.yaml
+    ```
+    ??? success "Output"
+        ```bash 
+		Sample  Length  Nodes   Edges   Paths
+		smooth  2967578 245347  330791  5
+		seqwish 3213544 122575  164967  5
+		```
+
 ## check the .gfa file. 
 - **(Graphical Fragment Assembly) GFA** is a file format commonly used to represent assembly graphs or sequence variation graphs
 
@@ -197,13 +216,4 @@ This shows a 1D rendering of the built pangenome graph where the paths are color
     ```
 
     ![2D visulizatio by gfaestus ](theme_figures/5NM_2k94_gfaestus.png)
-
-## Check the statistics statistics for both the seqwish and smoothxg graphs
-!!! info ""
-
-#### 5NM -s 2000, -p 94, -k default 
-
-| Sample Name                         | Length    | Nodes  | Edges  |Paths       |Components | A   |C    |T    |G    |N   |
-|:-----                               |----------:|-------:|-------:|------------|-----------:|----:|----:|----:|----:|----:|
-|seqwish  |3213544	|122575	|164967	|5	|1	|796617	|815725	|800622	|800480	|100|
-|smooth	  |2964772	|246887	|332917	|5	|1	|745161	|757008	|737404	|725099 |100|
+		
