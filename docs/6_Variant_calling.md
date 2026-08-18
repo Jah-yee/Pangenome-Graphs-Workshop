@@ -59,22 +59,26 @@ An example run to obtain VCF files from GFA.
 
     ```bash
     vg deconstruct -h
-    #use vg deconstruct the graph into VCF based on the first path NC_003112.2
-    #-e, --path-traversals    Only consider traversals that correspond to paths in the graph.
-    #-a, --all-snarls         Process all snarls, including nested snarls (by default only top-level snarls reported).
-    #-H, --path-sep SEP       Obtain alt paths from the set of paths, assuming a path name hierarchy (e.g. SEP='#' and sample#phase#contig)
     ```
+    
+    !!! success "Output"
+    	```text
+    	#use vg deconstruct the graph into VCF based on the first path NC_003112.2
+    	#-e, --path-traversals    Only consider traversals that correspond to paths in the graph.
+    	#-a, --all-snarls         Process all snarls, including nested snarls (by default only top-level snarls reported).
+    	#-H, --path-sep SEP       Obtain alt paths from the set of paths, assuming a path name hierarchy (e.g. SEP='#' and sample#phase#contig)
+    	```
     
     - vg deconstruct for the 5NM_2Kb94.gfa using the path NC_003112.2 as reference 
     ```bash
-    vg deconstruct -p "NC_003112.2#1#1" -a -e -H AAAA ./5NM_2Kb94.gfa > 5NM_2Kb94aep1.vcf
+    vg deconstruct -p "NC_003112.2#1#1#0" -a -e -H AAAA ./5NM_2Kb94.gfa > 5NM_2Kb94aep1.vcf
     bcftools view 5NM_2Kb94aep1.vcf -Oz -o 5NM_2Kb94aep1.vcf.gz
     tabix 5NM_2Kb94aep1.vcf.gz
     ```
 
     - use vg deconstruct the graph into VCF based on the second path NC_017518.1
-    ```
-    vg deconstruct -p "NC_017518.1#1#1" -a -e -H AAAA ./5NM_2Kb94.gfa > 5NM_2Kb94aep2.vcf
+    ```bash
+    vg deconstruct -p "NC_017518.1#1#1#0" -a -e -H AAAA ./5NM_2Kb94.gfa > 5NM_2Kb94aep2.vcf
 	bgzip 5NM_2Kb94aep2.vcf
     tabix 5NM_2Kb94aep2.vcf.gz
     ```
