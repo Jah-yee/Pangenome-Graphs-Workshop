@@ -35,11 +35,11 @@ Inspect the index.
     !!! success "Output"
         
         ```
-		NC_003112.2     2272360 60      80      81
-		NC_017518.1     2248966 2300889 80      81
-		NZ_CP007668.1   2324822 4578040 80      81
-		NZ_CP016880.1   2207174 6931986 80      81
-		NZ_CP020423.2   2244886 9166836 80      81
+		NC_003112.2     2272360 60      60      61
+		NC_017518.1     2248966 2310357 60      61
+		NZ_CP007668.1   2324822 4596878 60      61
+		NZ_CP016880.1   2207174 6960511 60      61
+		NZ_CP020423.2   2244886 9204558 60      61
         ```
 
 ## Conform with PanSN naming
@@ -63,47 +63,14 @@ More details at https://github.com/pangenome/PanSN-spec
     !!! success "Output"
         
         ```
-		NC_003112.2#1#1 2272360 17      80      81
-		NC_017518.1#1#1 2248966 2300799 80      81
-		NZ_CP007668.1#1#1       2324822 4577897 80      81
-		NZ_CP016880.1#1#1       2207174 6931799 80      81
-		NZ_CP020423.2#1#1       2244886 9166582 80      81
+		NC_003112.2#1#1 2272360 17      60      61
+		NC_017518.1#1#1 2248966 2310267 60      61
+		NZ_CP007668.1#1#1       2324822 4596735 60      61
+		NZ_CP016880.1#1#1       2207174 6960324 60      61
+		NZ_CP020423.2#1#1       2244886 9204304 60      61
         ```
 
 ## Running PGGB
-
-### Use `mash triangle` to check the pairwise identity of the input genomes, which will give us some idea how to set `-p` 
-
-!!! terminal "code"
-
-    ```bash
-    module purge
-    module load Mash/2.3-GCC-12.3.0
-    ```
-    ```bash
-    mash triangle 5NM.fa > 5NM.fa_mash
-    ```
-
-    - Inspect the output
-    ```bash
-    more 5NM.fa_mash
-    ```
-
-    ??? success "Output"
-
-        ```
-                5
-        NC_003112.2#1#1
-        NC_017518.1#1#1     0.0152404
-        NZ_CP007668.1#1#1   0.0149234       0.00635099
-        NZ_CP016880.1#1#1   0.0178909       0.0171265       0.0170111
-        NZ_CP020423.2#1#1   0.0190552       0.0194352       0.0185579       0.0106974
-        ```
-
-
-<b>The lower triangle represents the pairwise distances between the 5NM genomes. We can observe that the largest paired distance is 0.0194352, which is approximately 0.02. Considering that lower values indicate better alignment, we are going to use an alignment threshold of `-p 94` for constructing the pangenome graph. </b> 
-
-**Please keep in mind that for each dataset, we may need to test different settings to find a relatively good setting.**
 
 ### Executing `pggb` 
 
@@ -185,6 +152,38 @@ More details at https://github.com/pangenome/PanSN-spec
         
         Use wfmash, seqwish, smoothxg, odgi, gfaffix, and vg to build, project and display a pangenome graph.
         ```
+
+### Use `mash triangle` to check the pairwise identity of the input genomes, which will give us some idea how to set `-p` 
+
+!!! terminal "code"
+
+    ```bash
+    module load Mash/2.3-GCC-12.3.0
+    ```
+    ```bash
+    mash triangle 5NM.fa > 5NM.fa_mash
+    ```
+
+    - Inspect the output
+    ```bash
+    more 5NM.fa_mash
+    ```
+
+    ??? success "Output"
+
+        ```
+                5
+        NC_003112.2#1#1
+        NC_017518.1#1#1     0.0152404
+        NZ_CP007668.1#1#1   0.0149234       0.00635099
+        NZ_CP016880.1#1#1   0.0178909       0.0171265       0.0170111
+        NZ_CP020423.2#1#1   0.0190552       0.0194352       0.0185579       0.0106974
+        ```
+
+
+<b>The lower triangle represents the pairwise distances between the 5NM genomes. We can observe that the largest paired distance is 0.0194352, which is approximately 0.02. Considering that lower values indicate better alignment, we are going to use an alignment threshold of `-p 94` for constructing the pangenome graph. </b> 
+
+**Please keep in mind that for each dataset, we may need to test different settings to find a relatively good setting.**
 
 ### Construct pangenome graph for 5NM genomes with `-s 2000`, `-p 94`, and `-k 19`
 
