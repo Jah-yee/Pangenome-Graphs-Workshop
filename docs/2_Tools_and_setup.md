@@ -13,10 +13,9 @@
 ??? info "Other Tools might be useful for pangenome graphs"
 
     - The Minigraph-Cactus Pangenome Pipeline (https://github.com/ComparativeGenomicsToolkit/cactus/blob/master/doc/pangenome.md).
-    - gfaestus, which can be used for graph visualization (https://github.com/chfi/gfaestus)
+    - gfaestus can be used for graph visualization (https://github.com/chfi/gfaestus)
+    - Bandage plots can similarly be used to visulize graphs (https://github.com/rrwick/Bandage)
     - SequenceTubeMap for tube map visualization of genomic sequence graphs (https://github.com/vgteam/sequenceTubeMap)
-    - ......
-
 
 !!! circle-info "Software stack for pggb pipeline"
 
@@ -27,7 +26,6 @@
     - Mash/2.3-GCC-12.3.0
     - Circlator/1.5.5-gimkl-2022a-Python-3.10.5
     - vg/1.46.0
-    
 
 ??? circle-info "Running the pggb workflow locally"
 
