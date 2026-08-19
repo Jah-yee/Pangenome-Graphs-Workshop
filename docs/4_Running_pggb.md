@@ -195,7 +195,7 @@ More details at https://github.com/pangenome/PanSN-spec
     ```
 
 <hr>
-### Extened learning: Running `pggb` as a [Slurm](https://github.com/SchedMD/slurm) Job
+### Extended learning: Running `pggb` as a [Slurm](https://github.com/SchedMD/slurm) Job
 
 !!! warning "Please do NOT run the code below, this is an example for power users"
 
