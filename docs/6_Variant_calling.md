@@ -250,7 +250,7 @@ An example run to obtain VCF files from GFA.
 !!! terminal "code"
 
     ```bash
-    #Using R for distanc clustering
+    #Using R for distance clustering
     module purge
     module load R/4.0.1-gimkl-2020a
     R
