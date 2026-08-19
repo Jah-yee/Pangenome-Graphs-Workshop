@@ -51,6 +51,7 @@ Every tool downstream (pggb, vg, odgi) can parse this information, and the infor
 More details at https://github.com/pangenome/PanSN-spec
 
 !!! terminal "code"
+	For simplicity, we are going to set the haplotype and contig to 1 (add `#1#1`) for each *N. meningitidis* genome assembly, as they are haploid (only 1 haplotype) and we have a complete circular genome (only 1 contig) for each.  
     ```bash
 	awk '/^>/{name=substr($1,2); sub(/#1$/, "", name); print ">"name"#1#1"; next} {print}' 5NM.fa > tmp && mv tmp 5NM.fa	
 	samtools faidx 5NM.fa
@@ -179,9 +180,8 @@ More details at https://github.com/pangenome/PanSN-spec
         NZ_CP016880.1#1#1   0.0178909       0.0171265       0.0170111
         NZ_CP020423.2#1#1   0.0190552       0.0194352       0.0185579       0.0106974
         ```
-
-
-<b>The lower triangle represents the pairwise distances between the 5NM genomes. We can observe that the largest paired distance is 0.0194352, which is approximately 0.02. Considering that lower values indicate better alignment, we are going to use an alignment threshold of `-p 94` for constructing the pangenome graph. </b> 
+		The triangle represents the pairwise distances between the 5NM genomes. We can observe that the largest paired distance is 0.0194352, which is approximately 0.02. 
+		Considering that lower values indicate better alignment, we are going to use an alignment threshold of `-p 94` for constructing the pangenome graph, as a conservative estimate.
 
 **Please keep in mind that for each dataset, we may need to test different settings to find a relatively good setting.**
 
@@ -202,7 +202,7 @@ More details at https://github.com/pangenome/PanSN-spec
 Executing shell scripts in a HPC  might not be the best way to handle larger files which will require large memory, CPU power and time. 
 We can modify the previously explained script as below to run as Slurm job. Note the additional parameters specified by `#SBATCH` which will indicate maximum resource limitations. 
 
-!!! terminal-2 "The following is a SLURM script (`pggb_5NM_2k94.sl`) for PGGB with `-s 2000` and `-p 94`"
+!!! terminal-2 "The following is a SLURM script (`pggb_5NM_2k94.sl`) for PGGB with `-s 2000`, `-p 94`, and `-k 19`"
 
     ```bash linenums="1"
     #!/bin/bash -e     
@@ -224,7 +224,7 @@ We can modify the previously explained script as below to run as Slurm job. Note
     
     # Run PGGB
     # 2K94
-    pggb -i $data -s 2000 -p 94 -n 5 -t $SLURM_CPUS_PER_TASK -S -m -o $WD/5NM_2Kb94 -V 'NC_017518.1:#'
+    pggb -i $data -s 2000 -p 94 -k 19 -n 5 -t $SLURM_CPUS_PER_TASK -S -m -o $WD/5NM_2Kb94 -V 'NC_017518.1:#'
     
     ```
 

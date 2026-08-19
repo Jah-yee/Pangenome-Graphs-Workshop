@@ -62,6 +62,7 @@ An example run to obtain VCF files from GFA.
     ```
     
     !!! success "Output"
+    	The arguments we are interested in are -e -a.
     	```text
     	use vg deconstruct the graph into VCF based on the first path NC_003112.2
     	-e, --path-traversals    Only consider traversals that correspond to paths in the graph.
