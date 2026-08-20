@@ -1,311 +1,237 @@
-# Mapping short reads
-NGS data analysis used graph as a reference 
+# Mapping short reads with `vg giraffe`
 
-## vg mapping preliminaries
-Although vg contains a number of tools for working with pangenome graphs, it is best-known for read mapping. This is ultimately what many of its users are interested in `vg` for. In fact, vg contains three mature short read mapping tools:
+NGS reads can be mapped to a pangenome graph rather than to a single linear reference. In this workshop we use [`vg giraffe`](https://github.com/vgteam/vg/wiki/Mapping-short-reads-with-Giraffe), the haplotype-aware short-read mapper in `vg`.
 
-!!! info ""
+`vg giraffe` is designed to map short reads efficiently to pangenome graphs while using known haplotype paths to improve mapping through variable regions.
 
-    - `vg map`: the original, highly accurate mapping algorithm
-    - `vg giraffe`: the much faster and still accurate haplotype-based mapping algorithm
-    - `vg mpmap`: the splice-aware RNA-seq mapping algorithm
+!!! info "Why `vg giraffe` rather than `vg map`?"
+    `vg map` is the original general-purpose graph mapper, whereas `vg giraffe` is specifically designed for fast short-read mapping to haplotype-aware pangenome graphs. For short-read mapping, `vg giraffe` is the recommended approach.
 
-more details of vg can be found https://github.com/vgteam/vg
-
-we use vg map in this workshop 
-
-### Learning objectives
+## Learning objectives
 
 !!! quote ""
 
-    - Map NGS data to graph using vg map
-    - Variant calling for NGS data against genome graph 
+    - Build the indexes required for `vg giraffe` from a pangenome graph.
+    - Map paired-end NGS reads to the graph.
+    - Assess mapping quality using `vg stats`.
 
+## Before you start
 
-## Build index for graph
+For this workshop we already have a PGGB graph in GFA format:
+
+```text
+5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.gfa
+```
+
+The graph contains the five *N. meningitidis* assemblies used earlier in the workshop.
+
+!!! warning "Use a recent version of `vg`"
+    `vg` is under active development. The current `vg` documentation recommends using a recent release because important fixes and improvements are made regularly. 
+    
+    We are using a very old version of vg (v1.46.0).
+---
+
+## Build the Giraffe indexes
+
+### Prepare the working directory
 
 !!! terminal "code"
-
     ```bash
-    
-    mkdir graph_NGS
-    
-    #copy graph to the graph reference (.gfa file) to work direvtory graph_NGS 
-    cp /home/$your_home_dir/pg_workshop/5NM*.gfa ./home/$your_home_dir/pg_workshop/graph_NGS/5NM.gfa
+    mkdir -p ~/pg_workshop/Short_Read_Mapping
+    cd ~/pg_workshop/Short_Read_Mapping
 
-    cd /home/$your_home_dir/pg_workshop/graph_NGS
+    # Copy the PGGB graph to the working directory
+    cp ../5NM_2Kb94/5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.gfa ./5NM.gfa
     ```
 
-Load the necessary modules for an example run.
-!!! terminal "code"
+Load `vg`:
 
+!!! terminal "code"
     ```bash
     module purge
     module load vg/1.46.0
     ```
 
+!!! tip
+    Record the `vg` version used to construct the indexes and perform the mapping. Using the same version for index construction and mapping avoids compatibility problems.
 
-Build the index.
+### Convert P-lines to W-lines with `vg`
 
-!!! terminal "code"
-
-    ```bash
-   
-    mkdir -p ${temp_dir}
-    
-    # Convert graph into 256 bp chunks, saving as vg format
-    vg mod -X 256 5NM.gfa > 5NM_256.vg
-
-    #small graph is ok without prunning, complex graph will need to prune first before generating index
-    #Build xg and gcsa index
-    vg index -b ${temp_dir} -t 4 -x 5NM_256.xg -g 5NM_256.gcsa -k 16 5NM_256.vg
-    ### you may have run out of temporary disk space at temp_dir
-
-    ### pruning: use -M if pruning fails
-    vg prune -u -m node-mapping.tmp -t 4 -k 24 5NM_256.vg > 5NM_256_chopped.vg
-    
-    vg index 5NM_256_chopped.vg -x 5NM_256_chopped.xg
-    ### gcsa index, it takes .......
-    
-    vg index -b temp_dir -g 5NM_256_chopped.gcsa -x 5NM_256_chopped.xg -g 5NM_256_chopped.gcsa -k 16 5NM_256_chopped.vg
-    ```
-
-??? terminal "code"
-
-    ```bash
-    #run a slurm job for this, it takes ~10 mins based on the following setting 
-
-    
-    #!/bin/bash
-
-    #SBATCH --account       nesi02659
-    #SBATCH --job-name      build_index_for_5NMGraph
-    #SBATCH --cpus-per-task 8
-    #SBATCH --mem           16G
-    #SBATCH --time          1:00:00
-    #SBATCH --error         %x_%j.err
-    #SBATCH --output        %x_%j.out
-
-    # Modules
-    module purge
-    module load vg/1.46.0
-
-    # Variables
-    #cd /home/zyang/pg_workshop/graph_NGS
-    data=5NM.gfa
-    mkdir -p temp_dir
-
-    # Convert graph into 256 bp chunks, saving as vg format
-    vg mod -X 256 5NM.gfa > 5NM_256.vg
-
-    #small graph is ok without prunning
-    # Build xg and gcsa index
-    #vg index -b ${temp_dir} -t $cpus-per-task -x 5NM_256.xg -g 5NM_256.gcsa -k 16 5NM_256.vg
-
-    #complex graph will need to prune first before generating index
-    ### pruning: use -M if pruning fails
-    vg prune -u -m node-mapping.tmp -t 8 -k 24 5NM_256.vg > 5NM_256_chopped.vg
-
-    vg index 5NM_256_chopped.vg -x 5NM_256_chopped.xg
-    ### gcsa index
-    vg index -b temp_dir -t 8 -x 5NM_256_chopped.xg -g 5NM_256_chopped.gcsa -k 16 5NM_256_chopped.vg
-
-    ```
-
-
-
-## Map NGS reads to graph 
-
-Map reads back to graph reference
-!!! terminal "code"
-
-    ```bash
-    # Modules
-    module purge
-    module load vg/1.46.0
-
-
-    # Map reads
-    #SAMN13450731 is the NCBI record for NMI138 
-    vg map -t 8 -d 5NM_256_chopped -f NMI138_S5_R1_P.fastq.gz -f NMI138_S5_R1_P.fastq.gz -N NMI138  > NM138.vgmap_5NM.gam
-
-    # Output mapping statistics
-    vg stats -a NM138.vgmap_5NM.gam > /NM138.vgmap_4Sim_stats 
- 
-    ```
-
-Map reads back to graph reference as a slurm job.
-??? terminal "code"
-
-    ```bash
-    #!/bin/bash -e
-
-    #SBATCH --account       nesi02659
-    #SBATCH --job-name      vgmap_5e_5NM
-    #SBATCH --cpus-per-task 24
-    #SBATCH --mem           4G
-    #SBATCH --time          01:00:00
-    #SBATCH --error         %x_%j.err
-    #SBATCH --output        %x_%j.out
-
-    # Modules
-    module purge
-    module load vg/1.46.0
-
-    # Variables
-    wkdir=~/pg_test/graph_NGS
-    index=${wkdir}/5NM_256_chopped.gcsa
-    index_prefix=${index%%.gcsa
-
-    # Map reads
-    vg map -t $SLURM_CPUS_PER_TASK -d ${index_prefix} -f NMI138_S5_R1_P.fastq.gz -f NMI138_S5_R2_P.fastq.gz -N NMI138 > NM138.vgmap_5NM.gam
-
-    # Output mapping statistics
-    vg stats -a NM138.vgmap_5NM.gam > NM138.vgmap_5NM_stats
-  
-    ```
-<!-- 3 min per read pair -->
-
-
-
-## Genotying known variants 
-
-Generate snarls of graph.
+!!! warning "P-lines and W-lines"
+    This graph's `.gfa` file uses **P-lines** (GFA v1.0) to encode paths, not **W-lines** (GFA v1.1). PGGB writes P-lines. Some downstream tools expect or prefer W-lines to auto-detect reference vs. haplotype paths, so a conversion step is required before those steps.
 
 !!! terminal "code"
+	```bash
+    vg convert -g 5NM.gfa -f > 5NM.walk.gfa
+	```
 
+    - `-g` reads the GFA input
+    - `-f` writes GFA output (W-lines by default; pass `-W` instead to force P-lines back out)
+
+    Path names should follow [PanSN-spec](https://github.com/pangenome/PanSN-spec) (`sample#haplotype#contig`) so `vg` can correctly assign each W-line's SampleId/HapIndex/SeqId fields and distinguish reference paths from haplotypes.
+	To convert W-lines to P-lines use `vg convert -g 5NM.walk.gfa -f -W > 5NM.path.gfa`
+
+
+### Build the indexes with `vg autoindex`
+
+For a GFA graph containing haplotype paths, the simplest approach is to let `vg autoindex` construct the Giraffe indexes:
+
+!!! terminal "code"
     ```bash
-    module purge
-    module load vg/1.46.0
-
-    vg snarls -t 2 5NM_256.xg > 5NM_256.xg.snarls
-    
+    vg autoindex \
+        --workflow giraffe \
+        -g 5NM.walk.gfa \
+        -p 5NM_pangenome
     ```
 
-Perform genotyping.
+This produces the files required by `vg giraffe`, including:
+
+```text
+5NM_pangenome.giraffe.gbz
+5NM_pangenome.dist
+5NM_pangenome.min
+```
+
+`vg autoindex` handles the required graph preparation and index construction, including chopping long nodes where necessary. The GBZ contains the graph together with haplotype information. The other files provide the distance and minimizer indexes used by Giraffe.
+
+!!! info "Long nodes"
+    vg does not work well with graph nodes longer than 1024 bp when constructing minimizer indexes. When converting a GFA to GBZ, `vg` automatically chops long nodes as required. The resulting GBZ retains a translation back to the original graph coordinates.
+
+!!! warning
+    From vg v1.63.0 a .zipcodes index will also be created (and expected for downstream tools).
+
+---
+
+## Map paired-end NGS reads
+
+Assume the paired-end reads are:
+
+```text
+SRR10610805_1.fastq.gz
+SRR10610805_2.fastq.gz
+```
+
+The recommended Giraffe command is:
+
+!!! terminal "code"
+    ```bash
+    vg giraffe \
+        -p \
+        -t 8 \
+        -Z 5NM_pangenome.giraffe.gbz \
+        -d 5NM_pangenome.dist \
+        -m 5NM_pangenome.min \
+        -f SRR10610805_1.fastq.gz \
+        -f SRR10610805_2.fastq.gz \
+        -b default \
+        > SRR10610805.5NM.gam
+    ```
+
+The important options are:
+
+| Option | Purpose |
+|---|---|
+| `-p` | Print progress information |
+| `-t 8` | Use 8 mapping threads |
+| `-Z` | Giraffe GBZ graph |
+| `-d` | Distance index |
+| `-m` | Short-read minimizer index |
+| `-f` | FASTQ input; specify twice for paired-end reads |
+| `-b default` | Default short-read mapping preset |
+
+!!! terminal "code"
+    ```bash
+	vg view --align-in SRR10610805.5NM.gam | less
+    ```
+
+---
+
+## Evaluate the mapping
+
+`vg stats` can be used to obtain basic alignment statistics:
+
+!!! terminal "code"
+    ```bash
+    vg stats -a SRR10610805.5NM.gam > SRR10610805.5NM.stats
+    cat SRR10610805.5NM.stats
+    ```
+
+Useful statistics include:
+
+```text
+Total alignments: 1139592
+Total primary: 1139592
+Total secondary: 0
+Total aligned: 1139258
+Total perfect: 1018448
+Total gapless (softclips allowed): 1133796
+Total paired: 1139592
+Total properly paired: 1137260
+Insertions: 8652 bp in 2525 read events
+Deletions: 11447 bp in 5107 read events
+Substitutions: 199048 bp in 199048 read events
+Softclips: 670286 bp in 17479 read events
+```
+
+For paired-end data, a high proportion of reads should normally be properly paired, although the expected value depends on the sample and graph.
+
+---
+
+### Surjecting alignments to a linear reference
+
+If a BAM/CRAM/SAM representation is required, Giraffe can project alignments onto reference paths in the GBZ graph. To do this we first need to set a path to be the reference.
 
 
 !!! terminal "code"
-
     ```bash
-    # Calculate support reads
-    vg pack -t 8 -x 5NM_256.xg -g NM138.vgmap_5NM.gam -o NM138_vgmap_5NM_256.pack
-
-    # Call variants using the same coordinates and include reference calls for comparison
-    vg call -t 8 -m 3,10 5NM_256.xg -k NM138_vgmap_5NM_256.pack -r 5NM_256.xg.snarls -a > NM138.vgmap_5NM_256.pack_allR10S3.vcf
+    vg paths --metadata -x 5NM_pangenome.giraffe.gbz
     
+	vg gbwt -Z --set-tag "reference_samples=NC_003112.2" \
+    	--gbz-format \
+    	-g 5NM_pangenome.giraffe.ref.gbz \
+    	5NM_pangenome.giraffe.gbz
+
+    vg paths --metadata -x 5NM_pangenome.giraffe.ref.gbz
+
+    vg surject -x 5NM_pangenome.giraffe.ref.gbz \
+    	--into-path NC_003112.2#1#1 \
+    	--bam-output \
+    	SRR10610805.5NM.gam \
+    	> SRR10610805.5NM.bam
+    ```
+    
+	```bash
+    module load SAMtools/1.21-GCC-12.3.0
+    samtools view SRR10610805.5NM.bam | less
     ```
 
+!!! warning "Left-aligning"
+	For best results, indel left-alignment is recommended (e.g. bamleftalign from FreeBayes, or vg surject --left-align in newer version), see methods section [Surjection to GRCh38 and indel realignment](https://www.nature.com/articles/s41586-023-05896-x)
 
+!!! tip "Multiple Chromosomes"
+    To use a sample with multiple paths as the reference, collate those paths and input as a file `--into-paths <ref_paths.txt>`
 
-??? terminal "code"
+---
 
-    ```bash
-    #!/bin/bash -e
-    #SBATCH --account       nesi02659
-    #SBATCH --job-name      5NM_vgmap_genotying
-    #SBATCH --cpus-per-task 24
-    #SBATCH --mem           4G
-    #SBATCH --time          01:00:00
-    #SBATCH --error         %x_%j.err
-    #SBATCH --output        %x_%j.out
+## Summary
 
-    # Modules
-    module purge 
-    module load vg/1.46.0
+The recommended short-read workflow is:
 
-    vg index 5NM_256.vg -x 5NM_256.xg
-
-    vg snarls -t 2 5NM_256.xg > 5NM_256.xg.snarls
-
-    # Calculate support reads
-    vg pack -t 8 -x 5NM_256.xg -g NM138.vgmap_5NM.gam -o NM138_vgmap_5NM_256.pack
-
-    # Call variants using the same coordinates and include reference calls for comparison
-    vg call -t 8 -m 3,10 5NM_256.xg -k NM138_vgmap_5NM_256.pack -r 5NM_256.xg.snarls -a > NM138.vgmap_5NM_256.pack_allR10S3.vcf
-  
-    ```
-
-
-## Novel variant calling using graph reference
-
-!!! terminal "code"
-
-    ```bash
-     # In order to also consider novel variants from the reads, use the augmented graph and gam 
-    # (as created in the "Augmentation" example using vg augment -A).
-    # Augment the graph with all variation from the GAM, saving to aug.vg
-    ### Augment the graph with all variation form the GAM except 
-    ### that implied by soft clips, saving to aug.vg.
-    ### *aug-gam contains the same reads as aln.gam but mapped to aug.vg
-
-    # Augment graph
-    vg augment -t 8  5NM_256_chopped.vg NM138.vgmap_5NM.gam -A NM138.nofilt_aug.gam > NM138.nofilt_aug.vg
-
-    # Index the augmented graph
-    vg index -t 8  NM138.nofilt_aug.vg  -x NM138.nofilt_aug.xg
-
-    # Compute the all read support from the augmented GAM
-    vg pack -t 8 -x NM138.nofilt_aug.xg -g NM138.nofilt_aug.gam -o NM138.nofilt_aug_allR.pack
-    
-    # Call variants.
-    #we need to trouble shooting about this, why the vcf file is empty 
-    vg call -t 8 -m 3,10 NM138.nofilt_aug.xg -k NM138.nofilt_aug_allR.pack > NM138.nofilt_aug_allR.pack.vcf
-    
-    ```
-
-??? terminal-2 "Slurm script"
-
-    ```bash
-    #!/bin/bash -e
-    
-    #SBATCH --account       nesi02659
-    #SBATCH --job-name      5.call_novel_variant
-    #SBATCH --cpus-per-task 24
-    #SBATCH --mem           4G
-    #SBATCH --time          01:00:00
-    #SBATCH --error         %x_%j.err
-    #SBATCH --output        %x_%j.out
-    #SBATCH --array         0-5
-
-    # Modules
-    module purge 
-    module load vg/1.46.0
-
-    # Variables
-    wkdir=~/pg_workshop/graph_NGS
-    gam_dir=${wkdir}/graph_based_mapping
-    out_dir=${wkdir}/vgmap_5e_sim4_allR10S3_novelcalling
-
-    mkdir -p ${out_dir}
-
-    vg=${wkdir}/refs/4Sim_1K96_256.vg
-    xg=${wkdir}/refs/4Sim_1K96_256.xg
-
-    # Array
-    file_array=(${gam_dir}/*.gam)
-    file=${file_array[$SLURM_ARRAY_TASK_ID]}
-    prefix=$(basename ${file} .wgsim_er0.005.vgmap_4Sim.gam)
-
-    # In order to also consider novel variants from the reads, use the augmented graph and gam 
-    # (as created in the "Augmentation" example using vg augment -A).
-    # Augment the graph with all variation from the GAM, saving to aug.vg
-    ### Augment the graph with all variation form the GAM except 
-    ### that implied by soft clips, saving to aug.vg.
-    ### *aug-gam contains the same reads as aln.gam but mapped to aug.vg
-
-    # Augment graph
-    vg augment -t $SLURM_CPUS_PER_TASK ${vg} ${file} -A ${out_dir}/${prefix}.nofilt_aug.gam > ${out_dir}/${prefix}.nofilt_aug.vg
-
-    # Index the augmented graph
-    vg index -t $SLURM_CPUS_PER_TASK ${out_dir}/${prefix}.nofilt_aug.vg -x ${out_dir}/${prefix}.nofilt_aug.xg
-
-    # Compute the all read support from the augmented GAM
-    vg pack -t $SLURM_CPUS_PER_TASK -x ${out_dir}/${prefix}.nofilt_aug.xg -g ${out_dir}/${prefix}.nofilt_aug.gam -o ${out_dir}/${prefix}.nofilt_aug_allR.pack
-
-    # Call variants
-    vg call -t $SLURM_CPUS_PER_TASK -m 3,10 ${out_dir}/${prefix}.nofilt_aug.xg -k ${out_dir}/${prefix}.nofilt_aug_allR.pack > ${out_dir}/${prefix}.nofilt_aug_allR.pack.vcf
-    ```
-
-
-
+```text
+PGGB GFA
+   │
+   ▼
+vg autoindex --workflow giraffe
+   │
+   ├── GBZ graph
+   ├── distance index
+   └── minimizer index
+          │
+          ▼
+   vg giraffe
+          │
+          ├── GAM
+		  ▼
+   vg surject
+          └── BAM/CRAM
+```
