@@ -30,6 +30,7 @@ Participants in this course will gain an understanding of pangenome concepts and
 
     - The workshop material was collaboratively prepared by Zoe Yang, Nuzla Ismail, Dinindu Senanayake, Jian Sheng Boey, Patrick J. Biggs, Mik Black, and Joep de Ligt
     - The development of this workshop is supported by Genomics Aotearoa Genome Graphs project to Mik Black and Joep de Ligt
+    - This workshop was updated by Ben Halliday, Chloé van der Burg, and Michael Hoggard
 
 !!! quote-right "Acknowledgments"
     - We extend our sincere appreciation to Assistant Professor Erik Garrison and his team at the University of Tennessee Health Science Center for their valuable guidance, suggestions, and feedback during the development of the pangenome graph pipeline.

@@ -8,10 +8,11 @@ https://www.bioworld.com/articles/696850-pangenome-gives-more-panoramic-view-of-
 
 - Variation graphs provide a compact representation of genetic variation across a population in the form of bidirected DNA sequence graphs, and they can encompass large-scale structural variants (SVs) such as inversions and duplications.
 
-- PGGB, the the PanGenome Graph Builder, is a reference-free pangenome graph constuction method. PGGB builds pangenome graphs from a set of input sequences.
+- PGGB, PanGenome Graph Builder, is a reference-free pangenome graph constuction method, using an all-vs-all alignment from a set of input genome sequences.
 
+- The main novelty of PGGB is that it doesn't rely on a reference, accurately and fully capture every part of the input genomes.
 
-- The main novelty of PGGB  is not just that it doesn't rely on a reference, but more importantly, it can accurately and fully capture every part of the input genomes.
+- Unfortunately, this is a trade-off as compute costs scale with the number and size of the input genomes. For large-scale pangenomes (>100 haplotypes), [Minigraph-Cactus](https://github.com/ComparativeGenomicsToolkit/cactus/blob/master/doc/pangenome.md) is generally used, which employs a reference-guided approach.
 
 
 ## How does PGGB work?
@@ -50,7 +51,7 @@ These base-level alignments are converted into a graph with `seqwish`. A filter 
 
 ![bacterial-pangenome](theme_figures/PGGB_workflow_3_small.png){: .center }
 
-### Normalizing the graph with smoothxg and gfafix
+### Normalizing the graph with smoothxg and gfaffix
 !!! info ""
 
 This process aims to optimize the structure and representation of the genome graph by resolving redundant or overlapping elements. This step is typically performed after the initial construction of the graph.
@@ -64,7 +65,7 @@ The normalization process in PGGB involves several steps, which may vary dependi
 2.	**Edge Optimization**: Edges represent connections between nodes. During normalization, the edges are optimized to minimize redundancy and improve the efficiency of the graph. This can include merging or repositioning edges to create a more streamlined and accurate representation of the genome.  
 ![bacterial-pangenome](theme_figures/PGGB_workflow_4_small.png)
 
-#### gfafix
+#### gfaffix
 !!! info ""
 
 3.	**Compact Representation**: Normalization aims to reduce the overall size of the graph by compacting the representation. This can involve compressing repetitive regions or simplifying complex structures while preserving the essential information and variant representation.
@@ -93,10 +94,10 @@ The normalization process in PGGB involves several steps, which may vary dependi
 The overall structure of PGGB's output graph is defined by three parameters: genome number (`-n`), segment length (`-s`), and pairwise identity (`-p`). 
 
 - `-n` : Genome number.
-- `-s` : Segment length defines the seed length used by the "MashMap3" homology mapper in wfmash.
-- `-p` : The pairwise identity (-p) is the minimum allowed pairwise identity between seeds. **default, 90**
+- `-s` : Segment length defines the seed length used by the "MashMap3" homology mapper in wfmash. **default: 5000**
+- `-p` : The pairwise identity (-p) is the minimum allowed pairwise identity between seeds. **default: 90**
 
-- `-k` : An additional parameter, can also greatly affect graph structure by pruning matches shorter than a given threshold from the initial graph model. In effect, **-k N removes any match shorter than Nbp** from the initial alignment. This filter removes potentially ambiguous pairwise alignments from consideration in establishing the initial scaffold of the graph. **default 19**
+- `-k` : An additional parameter, can also greatly affect graph structure by pruning matches shorter than a given threshold from the initial graph model. In effect, **-k N removes any match shorter than Nbp** from the initial alignment. This filter removes potentially ambiguous pairwise alignments from consideration in establishing the initial scaffold of the graph. **default: 19**
 
 
 ### Other parameters for executing PGGB
@@ -118,5 +119,5 @@ The overall structure of PGGB's output graph is defined by three parameters: gen
 - 15 helicobacter genomes, 5% divergence: `pggb -p 90 -n 15 -k 79 ....`
 - Yeast genomes, 5% divergence: PGGB's defaults should work well, just set -n.
 - Aligning 9 Major Histocompatibility Complex (MHC) class II assemblies from vertebrate genomes (5-10% divergence): `pggb -p 90 -n 9 -k 29 ...`
-- A few thousand bacterial genomes `pggb -x auto -n 2146 ...`. In general mapping sparsification **(`-x auto`)** is a good idea when you have many hundreds to thousands of genomes.
+- A few thousand bacterial genomes: `pggb -x auto -n 2146 ...`. In general mapping sparsification **(`-x auto`)** is a good idea when you have many hundreds to thousands of genomes.
 

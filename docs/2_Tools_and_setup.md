@@ -13,10 +13,9 @@
 ??? info "Other Tools might be useful for pangenome graphs"
 
     - The Minigraph-Cactus Pangenome Pipeline (https://github.com/ComparativeGenomicsToolkit/cactus/blob/master/doc/pangenome.md).
-    - gfaestus, which can be used for graph visualization (https://github.com/chfi/gfaestus)
+    - gfaestus can be used for graph visualization (https://github.com/chfi/gfaestus)
+    - Bandage plots can similarly be used to visulize graphs (https://github.com/rrwick/Bandage)
     - SequenceTubeMap for tube map visualization of genomic sequence graphs (https://github.com/vgteam/sequenceTubeMap)
-    - ......
-
 
 !!! circle-info "Software stack for pggb pipeline"
 
@@ -27,7 +26,6 @@
     - Mash/2.3-GCC-12.3.0
     - Circlator/1.5.5-gimkl-2022a-Python-3.10.5
     - vg/1.46.0
-    
 
 ??? circle-info "Running the pggb workflow locally"
 
@@ -59,7 +57,7 @@
     ### *Neisseria meningitidis* data set
     
     In this workshop, we use the bacterium _Neisseria (N.) meningitidis_ as our model organism.
- - Bacteria called _N. meningitidis_ cause meningococcal disease(IMD). About 1 in 10 people have these bacteria in the back of their nose and throat without being ill. This is called being ‘a carrier.’ Sometimes the bacteria invade the body and cause IMD.
+ - Bacteria called _N. meningitidis_ cause invasive meningococcal disease (IMD). About 1 in 10 people have these bacteria in the back of their nose and throat without being ill. This is called being ‘a carrier.’ Sometimes the bacteria invade the body and cause IMD.
  - Different capsular polysaccharides divide the meningococci into at least 12 serogroups, of which six groups (A, B, C, W, X, and Y) are responsible for most disease.
  - The genome of this bacterium spans approximately 2.1 to 2.4 Mb and possesses a GC content ranging from 51-52%.
  - A notable trait of _N. meningitidis_ genomes is their high recombination rate, which contributes significantly to the substantial genetic diversity found in this species.

@@ -39,6 +39,25 @@
         multiqc_report.html
         ```
 
+## Check the statistics statistics for both the seqwish and smoothxg graphs
+!!! info ""
+
+    ```bash
+	head -n5  5NM.fa.fefc7f5.417fcdf.seqwish.og.stats.yaml
+	head -n5  5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og.stats.yaml
+    ```
+
+    - Collate graph stats
+    ```bash
+    printf "Sample\tLength\tNodes\tEdges\tPaths\n"; awk 'FNR==1{if(NR>1) print name,len,nodes,edges,paths,comp; name=(FILENAME~/seqwish/?"seqwish":FILENAME~/smooth/?"smooth":FILENAME)}; /^length:/{len=$2} /^nodes:/{nodes=$2} /^edges:/{edges=$2} /^paths:/{paths=$2}; END{print name,len,nodes,edges,paths}' OFS='\t' *.og.stats.yaml
+    ```
+    ??? success "Output"
+        ```bash 
+		Sample  Length  Nodes   Edges   Paths
+		smooth  2967578 245347  330791  5
+		seqwish 3213544 122575  164967  5
+		```
+
 ## check the .gfa file. 
 - **(Graphical Fragment Assembly) GFA** is a file format commonly used to represent assembly graphs or sequence variation graphs
 
@@ -65,7 +84,7 @@
     
     tail 5NM*.gfa | less -S 
     ```
-    ??? success "output"
+    ??? success "Output"
         ```bash 
 		S       245456  A
 		L       245456  +       245458  +       0M
@@ -76,10 +95,10 @@
 		P       NC_017518.1#1#1   1+,3+,4+,5+,7+,8+,10+,11+,13+,14+,16+,17+,19+,20+,22+,24+,25+,27+,28+,30+,31+>
 		P       NZ_CP007668.1#1#1 1+,3+,4+,5+,7+,8+,10+,11+,13+,14+,16+,17+,19+,20+,22+,24+,25+,27+,28+,30+,31+>
 		P       NZ_CP016880.1#1#1 1+,2+,4+,6+,7+,9+,10+,12+,13+,15+,16+,18+,19+,21+,22+,24+,25+,27+,28+,30+,31+>
-		P       NZ_CP020423.2#1#1 1+,2+,4+,6+,7+,9+,10+,12+,13+,14+,16+,18+,19+,21+,22+,24+,25+,27+,28+,30+,31+>        ```
+		P       NZ_CP020423.2#1#1 1+,2+,4+,6+,7+,9+,10+,12+,13+,14+,16+,18+,19+,21+,22+,24+,25+,27+,28+,30+,31+>      
+		```
     ??? clipboard-question "what does S, L, P mean"
         `S` means DNA segments, `L` means links between notes, and `P` means paths
-
 
 ## Pangenome graph visualization using ODGI 
 
@@ -93,7 +112,7 @@ This image shows a 1D rendering of the built pangenome graph. The graph nodes ar
 !!! terminal-2 "ODGI Compressed 1D visualization "
 
     ```bash
-    odgi viz -i ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og -o ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og.viz_O_multiqc_1.png -x 1500 -y 500 -a 10 -O -I Consensus_  
+    odgi viz -i ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og -o ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og.viz_O_multiqc.png -x 1500 -y 500 -a 10 -O -I Consensus_  
     ```
 
 
@@ -107,7 +126,7 @@ This image shows a 1D rendering of the built pangenome graph. The graph nodes ar
 !!! terminal-2 "ODGI Compressed 1D visualization"
 
     ```bash
-    odgi viz -i ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og -o ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og.viz_multiqc_1.png -x 1500 -y 500 -a 10 -I Consensus_  
+    odgi viz -i ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og -o ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og.viz_multiqc.png -x 1500 -y 500 -a 10 -I Consensus_  
     ```
 
 
@@ -122,7 +141,7 @@ This shows a 1D rendering of the built pangenome graph where the paths are color
 !!! terminal-2 "ODGI Compressed 1D visualization"
 
     ```bash
-    odgi viz -i ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og -o ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og.viz_pos_multiqc_1.png -x 1500 -y 500 -a 10 -u -d -I Consensus_ 
+    odgi viz -i ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og -o ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og.viz_pos_multiqc.png -x 1500 -y 500 -a 10 -u -d -I Consensus_ 
     ```
 
 
@@ -135,7 +154,7 @@ This image shows a 1D rendering of the built pangenome graph where the paths are
 !!! terminal-2 "ODGI Compressed 1D visualization"
 
     ```bash
-    odgi viz -i ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og -o ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og.viz_inv_multiqc_1.png -x 1500 -y 500 -a 10 -z -I Consensus_
+    odgi viz -i ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og -o ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og.viz_inv_multiqc.png -x 1500 -y 500 -a 10 -z -I Consensus_
     ```
  
 
@@ -149,7 +168,7 @@ This shows a 1D rendering of the built pangenome graph where the paths are color
 !!! terminal "ODGI Compressed 1D visualization "
 
     ```bash
-    odgi viz -i ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og -o ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og.viz_depth_multiqc_1.png -x 1500 -y 500 -a 10 -m -I Consensus_ 
+    odgi viz -i ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og -o ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og.viz_depth_multiqc.png -x 1500 -y 500 -a 10 -m -I Consensus_ 
     ```
 
 
@@ -164,14 +183,14 @@ This shows a 1D rendering of the built pangenome graph where the paths are color
 !!! terminal-2 "ODGI Compressed 1D visualization "
 
     ```bash
-    odgi viz -i ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og -o ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og.viz_uncalled_multiqc_1.png -x 1500 -y 500 -a 10 -N -I Consensus_ 
+    odgi viz -i ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og -o ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og.viz_uncalled_multiqc.png -x 1500 -y 500 -a 10 -N -I Consensus_ 
     ```
 
 
 ### ODGI 2D drawing 
 !!! info ""
 
-<center>![ODGI 2D visualization](theme_figures/5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og.lay.draw.png)</center>
+![ODGI 2D visualization](theme_figures/5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og.lay.draw.png)</center>
 
 
 
@@ -179,12 +198,12 @@ This shows a 1D rendering of the built pangenome graph where the paths are color
 
     - Compute the layout first
     ```bash
-    odgi layout -i ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og -o ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og -P -t 16
+    odgi layout -i ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og -o ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og.lay -P -t 16
     ```
 
     - Retrieve the image
     ```bash
-    odgi draw -i ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og -c ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og -p ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og
+    odgi draw -i ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og -c ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og.lay -p ./5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.og.lay.draw.png
     ```
 
 ??? "Generate graph 2D visualization using gfaestus"
@@ -197,13 +216,4 @@ This shows a 1D rendering of the built pangenome graph where the paths are color
     ```
 
     ![2D visulizatio by gfaestus ](theme_figures/5NM_2k94_gfaestus.png)
-
-## Check the statistics statistics for both the seqwish and smoothxg graphs
-!!! info ""
-
-#### 5NM -s 2000, -p 94, -k default 
-
-| Sample Name                         | Length    | Nodes  | Edges  |Paths       |Components | A   |C    |T    |G    |N   |
-|:-----                               |----------:|-------:|-------:|------------|-----------:|----:|----:|----:|----:|----:|
-|seqwish  |3213544	|122575	|164967	|5	|1	|796617	|815725	|800622	|800480	|100|
-|smooth	  |2964772	|246887	|332917	|5	|1	|745161	|757008	|737404	|725099 |100|
+		

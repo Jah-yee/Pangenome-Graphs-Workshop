@@ -2,7 +2,7 @@
 !!! info ""
 
 - To detect both small and large variants among paths from the pangenome graph, we utilized the Variation Graph (VG) toolkit to deconstruct these variants into VCF files.
-- To decompose the graph into a VCF file, we need to choose one path as a reference for comparison with the others (any path can serve as this reference)
+- To decompose the graph into a VCF file, we need to choose one path as a reference for comparison with the others (any path can serve as this reference).
 - In fact, during the pangenome graph construction process, when the parameter -V 'NC_017518.1:#' is activated, the output file includes the VCF based on the NC_017518.1 reference.
 
 ## `vg deconstruct` graph to get the variations in vcf 
@@ -59,81 +59,35 @@ An example run to obtain VCF files from GFA.
 
     ```bash
     vg deconstruct -h
-    #use vg deconstruct the graph into VCF based on the first path NC_003112.2
-    #-e, --path-traversals    Only consider traversals that correspond to paths in the graph.
-    #-a, --all-snarls         Process all snarls, including nested snarls (by default only top-level snarls reported).
-    #-H, --path-sep SEP       Obtain alt paths from the set of paths, assuming a path name hierarchy (e.g. SEP='#' and sample#phase#contig)
     ```
+    
+    !!! success "Output"
+    	The arguments we are interested in are -e -a.
+    	```text
+    	use vg deconstruct the graph into VCF based on the first path NC_003112.2
+    	-e, --path-traversals    Only consider traversals that correspond to paths in the graph.
+    	-a, --all-snarls         Process all snarls, including nested snarls (by default only top-level snarls reported).
+    	```
     
     - vg deconstruct for the 5NM_2Kb94.gfa using the path NC_003112.2 as reference 
     ```bash
-    vg deconstruct -p "NC_003112.2#1#1" -a -e -H AAAA ./5NM_2Kb94.gfa > 5NM_2Kb94aep1.vcf
-    bcftools view 5NM_2Kb94aep1.vcf -Oz -o 5NM_2Kb94aep1.vcf.gz
+    vg deconstruct -p "NC_003112.2#1#1#0" -a -e ./5NM_2Kb94.gfa > 5NM_2Kb94aep1.vcf
+    bgzip 5NM_2Kb94aep1.vcf
     tabix 5NM_2Kb94aep1.vcf.gz
     ```
 
     - use vg deconstruct the graph into VCF based on the second path NC_017518.1
-    ```
-    vg deconstruct -p "NC_017518.1#1#1" -a -e -H AAAA ./5NM_2Kb94.gfa > 5NM_2Kb94aep2.vcf
+    ```bash
+    vg deconstruct -p "NC_017518.1#1#1#0" -a -e ./5NM_2Kb94.gfa > 5NM_2Kb94aep2.vcf
 	bgzip 5NM_2Kb94aep2.vcf
     tabix 5NM_2Kb94aep2.vcf.gz
     ```
     
-    - use bcftools stats to check the statistics for the vcf file 
-    ```bash
-    bcftools stats 5NM_2Kb94aep2.vcf.gz > 5NM_2Kb94aep2.vcf_stats
-    ```
-
-
-## check the vcf files
-
-!!! terminal-2 "check the statistics of vcf files"
-
-    ```bash
-    less -S 5NM_2Kb94aep1.vcf_stats
-    ```
-    ??? success "Output"
-        
-        ```
-		# This file was produced by bcftools stats (1.15.1+htslib-1.23.1) and can be plotted using plot-vcfstats.
-		# The command line was: bcftools stats  5NM_2Kb94aep1.vcf.gz
-		#
-		# Definition of sets:
-		# ID    [2]id   [3]tab-separated file names
-		ID      0       5NM_2Kb94aep1.vcf.gz
-		# SN, Summary numbers:
-		#   number of records   .. number of data rows in the VCF
-		#   number of no-ALTs   .. reference-only sites, ALT is either "." or identical to REF
-		#   number of SNPs      .. number of rows with a SNP
-		#   number of MNPs      .. number of rows with a MNP, such as CC>TT
-		#   number of indels    .. number of rows with an indel
-		#   number of others    .. number of rows with other type, for example a symbolic allele or
-		#                          a complex substitution, such as ACT>TCGA
-		#   number of multiallelic sites     .. number of rows with multiple alternate alleles
-		#   number of multiallelic SNP sites .. number of rows with multiple alternate alleles, all SNPs
-		# 
-		#   Note that rows containing multiple types will be counted multiple times, in each
-		#   counter. For example, a row with a SNP and an indel increments both the SNP and
-		#   the indel counter.
-		# 
-		# SN    [2]id   [3]key  [4]value
-		SN      0       number of samples:      4
-		SN      0       number of records:      75703
-		SN      0       number of no-ALTs:      0
-		SN      0       number of SNPs: 66313
-		SN      0       number of MNPs: 6901
-		SN      0       number of indels:       3286
-		SN      0       number of others:       1009
-		SN      0       number of multiallelic sites:   3757
-		SN      0       number of multiallelic SNP sites:       1363
-        ```
-<br>
-
-!!! terminal-2 "Inspect the vcf files"
-
+    - Inspect the vcf files
     ```bash
     less 5NM_2Kb94aep1.vcf.gz
     ```
+    
     ??? success "Output"
         
         ```
@@ -181,12 +135,58 @@ An example run to obtain VCF files from GFA.
 		1       2494    >87>90  T       C       60      .       AC=2;AF=0.5;AN=4;AT=>87>88>90,>87>89>90;NS=4;LV=0       GT      0       0       1       1
 		1       2503    >90>93  A       C       60      .       AC=4;AF=1;AN=4;AT=>90>91>93,>90>92>93;NS=4;LV=0 GT      1       1       1       1
         ```
-<br>
 
+!!! terminal-2 "check the statistics of vcf files"
+
+	- use bcftools stats to check the statistics for the vcf file 
+    ```bash
+    bcftools stats 5NM_2Kb94aep1.vcf.gz > 5NM_2Kb94aep1.vcf_stats
+    bcftools stats 5NM_2Kb94aep2.vcf.gz > 5NM_2Kb94aep2.vcf_stats
+    ```
+
+    ```bash
+    less -S 5NM_2Kb94aep1.vcf_stats
+    ```
+    ??? success "Output"
+        
+        ```
+		# This file was produced by bcftools stats (1.15.1+htslib-1.23.1) and can be plotted using plot-vcfstats.
+		# The command line was: bcftools stats  5NM_2Kb94aep1.vcf.gz
+		#
+		# Definition of sets:
+		# ID    [2]id   [3]tab-separated file names
+		ID      0       5NM_2Kb94aep1.vcf.gz
+		# SN, Summary numbers:
+		#   number of records   .. number of data rows in the VCF
+		#   number of no-ALTs   .. reference-only sites, ALT is either "." or identical to REF
+		#   number of SNPs      .. number of rows with a SNP
+		#   number of MNPs      .. number of rows with a MNP, such as CC>TT
+		#   number of indels    .. number of rows with an indel
+		#   number of others    .. number of rows with other type, for example a symbolic allele or
+		#                          a complex substitution, such as ACT>TCGA
+		#   number of multiallelic sites     .. number of rows with multiple alternate alleles
+		#   number of multiallelic SNP sites .. number of rows with multiple alternate alleles, all SNPs
+		# 
+		#   Note that rows containing multiple types will be counted multiple times, in each
+		#   counter. For example, a row with a SNP and an indel increments both the SNP and
+		#   the indel counter.
+		# 
+		# SN    [2]id   [3]key  [4]value
+		SN      0       number of samples:      4
+		SN      0       number of records:      75703
+		SN      0       number of no-ALTs:      0
+		SN      0       number of SNPs: 66313
+		SN      0       number of MNPs: 6901
+		SN      0       number of indels:       3286
+		SN      0       number of others:       1009
+		SN      0       number of multiallelic sites:   3757
+		SN      0       number of multiallelic SNP sites:       1363
+        ```
+        
 !!! terminal-2 "check the complex variation in vcf files"
 
     ```bash
-    zcat 5NM_2Kb94aep1.vcf.gz | awk 'length($4) > 2' | head -100 | less -S 
+    zcat 5NM_2Kb94aep1.vcf.gz | grep -v '^##' | awk 'length($4) > 2' | head -100 | less -S 
     ```
     ??? success "Output"
             
@@ -246,13 +246,11 @@ An example run to obtain VCF files from GFA.
 
     odgi similarity -i 5NM_2Kb94.gfa -d > 5NM_2Kb94.gfa_similarity
     cut -f 1,2,6 5NM_2Kb94.gfa_similarity > 5NM_2Kb94.gfa_similarity_cut
-
     ```
 !!! terminal "code"
 
     ```bash
-  
-    #Using R for distanc clustering
+    #Using R for distance clustering
     module purge
     module load R/4.0.1-gimkl-2020a
     R
@@ -266,9 +264,11 @@ An example run to obtain VCF files from GFA.
     # read in the data
     dat=read.csv("./5NM_2Kb94.gfa_similarity_cut",sep="\t")
     dat
+    
     # use reshape's cast function to change to matrix
     m <- cast(dat, group.a ~ group.b)
     m
+    
     # set the row names
     rownames(m) <- m[,1]
     rownames(m)
@@ -279,8 +279,8 @@ An example run to obtain VCF files from GFA.
  
     # do hierarchical clustering
     h <- hclust(d)
- 
     h
+    
     # plot the dendrogram
 	pdf("5NM_2Kb94_dendrogram.pdf", width = 8, height = 6)
 	plot(h,
@@ -290,7 +290,6 @@ An example run to obtain VCF files from GFA.
      ylab = "Height",
      cex  = 0.9)        # label text size, shrink if names are long/crowded	
     dev.off()
- 
+    
     ```
-
 

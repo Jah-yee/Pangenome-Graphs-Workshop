@@ -50,7 +50,7 @@ Pangenome graphs represent pangenomes using graph models, effectively capturing 
 
 ## Overview of a pangenome graph construction pipeline
 
-### **Pangenome concstruction by Pangenome Graph Builder (PGGB)**
+### **Pangenome construction by Pangenome Graph Builder (PGGB)**
 !!! info ""
 
 
@@ -83,11 +83,11 @@ We use ODGi to extract distances between paths within the graph, enabling furthe
 ![ODGI](theme_figures/Pipeline_step3_small.png)
 
 
-### **Varaint calling**
+### **Variant calling**
 !!! info ""
 
 <p align="justify">
-By using the pangenome graph created with PGGB, it is possible to concurrently identify a variety of genetic variations. These include structural variations (SVs), rearrangements, and smaller variants such as single nucleotide polymorphisms (SNPs) and insertions/deletions. These can be identified through the process of vg deconstruction.
+By using the pangenome graph created with PGGB, it is possible to concurrently identify a variety of genetic variations. These include structural variations (SVs), rearrangements, and smaller variants such as single nucleotide polymorphisms (SNPs) and insertions/deletions. These can be identified through deconstructing the graph using the Variation graph (VG) toolkit.
 </p>
 
 
