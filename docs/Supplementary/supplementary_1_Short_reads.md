@@ -102,9 +102,9 @@ This produces the files required by `vg giraffe`, including:
 
 ---
 
-## Map paired-end NGS reads
+## Map short-read WGS reads
 
-Assume the paired-end reads are:
+Say we have a sample with short-read WGS which we want to aligned to the pangenome, in this case a [*Neisseria meningitidis* isolate from a NZ hospital](https://www.ncbi.nlm.nih.gov/bioproject/592848):
 
 ```text
 SRR10610805_1.fastq.gz
@@ -186,14 +186,17 @@ If a BAM/CRAM/SAM representation is required, Giraffe can project alignments ont
     ```bash
     vg paths --metadata -x 5NM_pangenome.giraffe.gbz
     
-	vg gbwt -Z --set-tag "reference_samples=NC_003112.2" \
+	vg gbwt \
+		-Z \
+		--set-tag "reference_samples=NC_003112.2" \
     	--gbz-format \
     	-g 5NM_pangenome.giraffe.ref.gbz \
     	5NM_pangenome.giraffe.gbz
 
     vg paths --metadata -x 5NM_pangenome.giraffe.ref.gbz
 
-    vg surject -x 5NM_pangenome.giraffe.ref.gbz \
+    vg surject \
+    	-x 5NM_pangenome.giraffe.ref.gbz \
     	--into-path NC_003112.2#1#1 \
     	--bam-output \
     	SRR10610805.5NM.gam \
@@ -212,6 +215,61 @@ If a BAM/CRAM/SAM representation is required, Giraffe can project alignments ont
     To use a sample with multiple paths as the reference, collate those paths and input as a file `--into-paths <ref_paths.txt>`
 
 ---
+
+### Is this any better than just using a linear reference???
+
+We can compare how a 'flat' reference performs compared to our alignments against the pangenome 
+
+!!! terminal "code"
+    ```bash
+	awk '/^>/{if (seen++) exit} {print}'  ../5NM.fa > NC_003112.2.fa
+
+	vg construct -r NC_003112.2.fa -m 1024 > NC_003112.2_flat.vg
+	vg convert -f NC_003112.2_flat.vg > NC_003112.2_flat.gfa
+	
+	vg autoindex \
+    	--workflow giraffe \
+     	-g NC_003112.2_flat.gfa \
+     	-p NC_003112.2_flat
+    ```
+
+!!! tip "Alternative ways to make a pangenome with vg"
+	`vg construct` can be used to make a pangenome from a reference `-r` with variants called against that reference `-v`. This won't represent any complexity that isn't already captured in your variant calls.
+     
+!!! terminal "code"
+    ```bash
+	vg giraffe \
+        -p \
+        -t 8 \
+        -Z NC_003112.2_flat.giraffe.gbz \
+        -d NC_003112.2_flat.dist \
+        -m NC_003112.2_flat.min \
+        -f SRR10610805_1.fastq.gz \
+        -f SRR10610805_2.fastq.gz \
+        -b default \
+        > SRR10610805.NC_003112.2.gam
+        
+    vg stats -a SRR10610805.NC_003112.2.gam > SRR10610805.NC_003112.2.stats
+    cat SRR10610805.NC_003112.2.stats
+	```
+	
+| Metric | 5NM (pangenome) | NC_003112.2 (single ref) |
+|---|---|---|
+| Total alignments | 1,139,592 | 1,139,592 |
+| Total primary | 1,139,592 | 1,139,592 |
+| Total secondary | 0 | 0 |
+| Total aligned | 1,139,258 | 1,102,540 |
+| Total perfect | 1,018,448 | 315,227 |
+| Total gapless (softclips allowed) | 1,133,796 | 1,047,260 |
+| Total paired | 1,139,592 | 1,139,592 |
+| Total properly paired | 1,137,260 | 1,102,328 |
+| Insertions | 8,652 bp / 2,525 events | 97,424 bp / 39,816 events |
+| Deletions | 11,447 bp / 5,107 events | 120,580 bp / 42,322 events |
+| Substitutions | 199,048 bp | 3,011,833 bp |
+| Softclips | 670,286 bp / 17,479 events | 5,874,728 bp / 145,895 events |
+| Total time | 1,063.94 s | 384.855 s |
+| Speed | 1,071.11 reads/s | 2,961.1 reads/s |
+
 
 ## Summary
 
