@@ -4,7 +4,7 @@
 
 <h1 align="center">Unlock the Power of Pangenome Graphs</h1>
 
-![bacterial-pangenome](theme_figures/Genomegraphs_theme_figure130NM2D_20230703_small.png).
+![bacterial-pangenome](theme_figures/Genomegraphs_theme_figure130NM2D_20230703_small.png)
 
 ## Learning Objectives
 Participants in this course will gain an understanding of pangenome concepts and acquire hands-on experience in constructing and analyzing pangenome graphs. By the end of the course, they will have developed a comprehensive understanding of pangenome methods centered around whole genome assemblies. This will empower them to apply these methods to complex research questions that necessitate an understanding of the relationships between multiple genomes, or that require accounting for variability when analyzing new genomes.
