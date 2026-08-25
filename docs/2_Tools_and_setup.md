@@ -232,6 +232,10 @@ This workshop is run on the REANNZ HPC. Before the workshop, the instructors set
 
 ??? circle-info "Download this dataset on your local or a different machine"
 
+    Go to: [https://github.com/GenomicsAotearoa/Pangenome-Graphs-Workshop/releases/download/2026-August/5NM.fa](https://github.com/GenomicsAotearoa/Pangenome-Graphs-Workshop/releases/download/2026-August/5NM.fa)
+    for the latest dataset release.
+    
+    Originally sourced from:
     ```bash
     git clone https://github.com/ZoeYang2020/dataset_for_pg_workshop
     ```
