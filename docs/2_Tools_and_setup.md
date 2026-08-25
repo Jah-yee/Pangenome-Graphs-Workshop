@@ -222,7 +222,7 @@ This workshop is run on the REANNZ HPC. Before the workshop, the instructors set
     ```
     - Create a symbolic link to the `pg_workshop` dir that has been uniquely created for you:
     ```bash
-    ln -s /nesi/nobackup/nesi02659/pg_workshop/users/${USER}/
+    ln -s /nesi/nobackup/nesi02659/pg_workshop/users/${USER} pg_workshop 
     ```
     - You should now have a dir called `pg_workshop` in your home dir. Move into this directory:
     ```bash
