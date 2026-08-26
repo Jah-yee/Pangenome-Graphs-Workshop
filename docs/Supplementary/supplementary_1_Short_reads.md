@@ -37,7 +37,6 @@ The graph contains the five *N. meningitidis* assemblies used earlier in the wor
 
 !!! terminal "code"
     ```bash
-    mkdir -p ~/pg_workshop/Short_Read_Mapping
     cd ~/pg_workshop/Short_Read_Mapping
 
     # Copy the PGGB graph to the working directory
