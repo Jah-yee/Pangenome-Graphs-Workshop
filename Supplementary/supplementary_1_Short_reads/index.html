@@ -1,0 +1,1358 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="Genomics Aotearoa">
+      
+      
+        <link rel="canonical" href="https://genomicsaotearoa.github.io/Pangenome-Graphs-Workshop/Supplementary/supplementary_1_Short_reads/">
+      
+      
+        <link rel="prev" href="../../6_Variant_calling/">
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../theme_figures/GA-image-black-favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Mapping short reads with vg giraffe - Pangenome Graphs</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Mukta:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Mukta";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  <link href="../../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#mapping-short-reads-with-vg-giraffe" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+<!-- Custom Banner -->
+<div class="banner">
+    <p style="color:rgb(250, 246, 246); display:inline;font-size: 160%;">This repository is in the early stages of development (Beta Version)</p>
+</div>
+
+<!-- Original Header -->
+
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Pangenome Graphs" class="md-header__button md-logo" aria-label="Pangenome Graphs" data-md-component="logo">
+      
+  <img src="../../theme_figures/GA-logo-banner.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Pangenome Graphs
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Mapping short reads with vg giraffe
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="indigo" aria-label="Switch to light mode" type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden="">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"></path></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="indigo" aria-label="Switch to dark mode" type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden="">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="indigo" aria-label="Switch to system preference" type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden="">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required="">
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix="">
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/GenomicsAotearoa/Pangenome-Graphs-Workshop" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GenomicsAotearoa/Pangenome-Graphs-Workshop
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Pangenome Graphs" class="md-nav__button md-logo" aria-label="Pangenome Graphs" data-md-component="logo">
+      
+  <img src="../../theme_figures/GA-logo-banner.png" alt="logo">
+
+    </a>
+    Pangenome Graphs
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/GenomicsAotearoa/Pangenome-Graphs-Workshop" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GenomicsAotearoa/Pangenome-Graphs-Workshop
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix="">
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../1_Introduction_to_pangenome_graphs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Introduction to pangenome graphs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../2_Tools_and_setup/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Tools &amp; setup
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../3_Introduction_to_pggb/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Introduction to PGGB
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../4_Running_pggb/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. Running PGGB
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../5_Evaluating_pggb_output/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Evaluating output
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../6_Variant_calling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. Variant calling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" checked="">
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Supplementary
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Supplementary
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mapping short reads with vg giraffe
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mapping short reads with vg giraffe
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#learning-objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Learning objectives
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#before-you-start" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Before you start
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#build-the-giraffe-indexes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Build the Giraffe indexes
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Build the Giraffe indexes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#prepare-the-working-directory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prepare the working directory
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#convert-p-lines-to-w-lines-with-vg" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Convert P-lines to W-lines with vg
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#build-the-indexes-with-vg-autoindex" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Build the indexes with vg autoindex
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#map-short-read-wgs-reads" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Map short-read WGS reads
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#evaluate-the-mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Evaluate the mapping
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Evaluate the mapping">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#surjecting-alignments-to-a-linear-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Surjecting alignments to a linear reference
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#is-this-any-better-than-just-using-a-linear-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Is this any better than just using a linear reference???
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#learning-objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Learning objectives
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#before-you-start" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Before you start
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#build-the-giraffe-indexes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Build the Giraffe indexes
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Build the Giraffe indexes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#prepare-the-working-directory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prepare the working directory
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#convert-p-lines-to-w-lines-with-vg" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Convert P-lines to W-lines with vg
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#build-the-indexes-with-vg-autoindex" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Build the indexes with vg autoindex
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#map-short-read-wgs-reads" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Map short-read WGS reads
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#evaluate-the-mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Evaluate the mapping
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Evaluate the mapping">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#surjecting-alignments-to-a-linear-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Surjecting alignments to a linear reference
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#is-this-any-better-than-just-using-a-linear-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Is this any better than just using a linear reference???
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="mapping-short-reads-with-vg-giraffe">Mapping short reads with <code>vg giraffe</code><a class="headerlink" href="#mapping-short-reads-with-vg-giraffe" title="Permanent link">¶</a></h1>
+<p>NGS reads can be mapped to a pangenome graph rather than to a single linear reference. In this workshop we use <a href="https://github.com/vgteam/vg/wiki/Mapping-short-reads-with-Giraffe"><code>vg giraffe</code></a>, the haplotype-aware short-read mapper in <code>vg</code>.</p>
+<p><code>vg giraffe</code> is designed to map short reads efficiently to pangenome graphs while using known haplotype paths to improve mapping through variable regions.</p>
+<div class="admonition info">
+<p class="admonition-title">Why <code>vg giraffe</code> rather than <code>vg map</code>?</p>
+<p><code>vg map</code> is the original general-purpose graph mapper, whereas <code>vg giraffe</code> is specifically designed for fast short-read mapping to haplotype-aware pangenome graphs. For short-read mapping, <code>vg giraffe</code> is the recommended approach.</p>
+</div>
+<h2 id="learning-objectives">Learning objectives<a class="headerlink" href="#learning-objectives" title="Permanent link">¶</a></h2>
+<div class="admonition quote">
+<ul>
+<li>Build the indexes required for <code>vg giraffe</code> from a pangenome graph.</li>
+<li>Map paired-end NGS reads to the graph.</li>
+<li>Assess mapping quality using <code>vg stats</code>.</li>
+</ul>
+</div>
+<h2 id="before-you-start">Before you start<a class="headerlink" href="#before-you-start" title="Permanent link">¶</a></h2>
+<p>For this workshop we already have a PGGB graph in GFA format:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.gfa
+</code></pre></div>
+<p>The graph contains the five <em>N. meningitidis</em> assemblies used earlier in the workshop.</p>
+<div class="admonition warning">
+<p class="admonition-title">Use a recent version of <code>vg</code></p>
+<p><code>vg</code> is under active development. The current <code>vg</code> documentation recommends using a recent release because important fixes and improvements are made regularly. </p>
+<p>We are using a very old version of vg (v1.46.0).</p>
+</div>
+<hr>
+<h2 id="build-the-giraffe-indexes">Build the Giraffe indexes<a class="headerlink" href="#build-the-giraffe-indexes" title="Permanent link">¶</a></h2>
+<h3 id="prepare-the-working-directory">Prepare the working directory<a class="headerlink" href="#prepare-the-working-directory" title="Permanent link">¶</a></h3>
+<div class="admonition terminal">
+<p class="admonition-title">code</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">cd</span><span class="w"> </span>~/pg_workshop/Short_Read_Mapping
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="c1"># Copy the PGGB graph to the working directory</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>cp<span class="w"> </span>../5NM_2Kb94/5NM.fa.fefc7f5.417fcdf.e2ae00b.smooth.final.gfa<span class="w"> </span>./5NM.gfa
+</code></pre></div>
+</div>
+<p>Load <code>vg</code>:</p>
+<div class="admonition terminal">
+<p class="admonition-title">code</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>module<span class="w"> </span>purge
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>module<span class="w"> </span>load<span class="w"> </span>vg/1.46.0
+</code></pre></div>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Record the <code>vg</code> version used to construct the indexes and perform the mapping. Using the same version for index construction and mapping avoids compatibility problems.</p>
+</div>
+<h3 id="convert-p-lines-to-w-lines-with-vg">Convert P-lines to W-lines with <code>vg</code><a class="headerlink" href="#convert-p-lines-to-w-lines-with-vg" title="Permanent link">¶</a></h3>
+<div class="admonition warning">
+<p class="admonition-title">P-lines and W-lines</p>
+<p>This graph's <code>.gfa</code> file uses <strong>P-lines</strong> (GFA v1.0) to encode paths, not <strong>W-lines</strong> (GFA v1.1). PGGB writes P-lines. Some downstream tools expect or prefer W-lines to auto-detect reference vs. haplotype paths, so a conversion step is required before those steps.</p>
+</div>
+<div class="admonition terminal">
+<p class="admonition-title">code</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>vg<span class="w"> </span>convert<span class="w"> </span>-g<span class="w"> </span>5NM.gfa<span class="w"> </span>-f<span class="w"> </span>&gt;<span class="w"> </span>5NM.walk.gfa
+</code></pre></div>
+<ul>
+<li><code>-g</code> reads the GFA input</li>
+<li><code>-f</code> writes GFA output (W-lines by default; pass <code>-W</code> instead to force P-lines back out)</li>
+</ul>
+<p>Path names should follow <a href="https://github.com/pangenome/PanSN-spec">PanSN-spec</a> (<code>sample#haplotype#contig</code>) so <code>vg</code> can correctly assign each W-line's SampleId/HapIndex/SeqId fields and distinguish reference paths from haplotypes.
+To convert W-lines to P-lines use <code>vg convert -g 5NM.walk.gfa -f -W &gt; 5NM.path.gfa</code></p>
+</div>
+<h3 id="build-the-indexes-with-vg-autoindex">Build the indexes with <code>vg autoindex</code><a class="headerlink" href="#build-the-indexes-with-vg-autoindex" title="Permanent link">¶</a></h3>
+<p>For a GFA graph containing haplotype paths, the simplest approach is to let <code>vg autoindex</code> construct the Giraffe indexes:</p>
+<div class="admonition terminal">
+<p class="admonition-title">code</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>vg<span class="w"> </span>autoindex<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">    </span>--workflow<span class="w"> </span>giraffe<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">    </span>-g<span class="w"> </span>5NM.walk.gfa<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">    </span>-p<span class="w"> </span>5NM_pangenome
+</code></pre></div>
+</div>
+<p>This produces the files required by <code>vg giraffe</code>, including:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>5NM_pangenome.giraffe.gbz
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>5NM_pangenome.dist
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>5NM_pangenome.min
+</code></pre></div>
+<p><code>vg autoindex</code> handles the required graph preparation and index construction, including chopping long nodes where necessary. The GBZ contains the graph together with haplotype information. The other files provide the distance and minimizer indexes used by Giraffe.</p>
+<div class="admonition info">
+<p class="admonition-title">Long nodes</p>
+<p>vg does not work well with graph nodes longer than 1024 bp when constructing minimizer indexes. When converting a GFA to GBZ, <code>vg</code> automatically chops long nodes as required. The resulting GBZ retains a translation back to the original graph coordinates.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>From vg v1.63.0 a .zipcodes index will also be created (and expected for downstream tools).</p>
+</div>
+<hr>
+<h2 id="map-short-read-wgs-reads">Map short-read WGS reads<a class="headerlink" href="#map-short-read-wgs-reads" title="Permanent link">¶</a></h2>
+<p>Say we have a sample with short-read WGS which we want to aligned to the pangenome, in this case a <a href="https://www.ncbi.nlm.nih.gov/bioproject/592848"><em>Neisseria meningitidis</em> isolate from a NZ hospital</a>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>SRR10610805_1.fastq.gz
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>SRR10610805_2.fastq.gz
+</code></pre></div>
+<p>The recommended Giraffe command is:</p>
+<div class="admonition terminal">
+<p class="admonition-title">code</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>vg<span class="w"> </span>giraffe<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">    </span>-p<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">    </span>-t<span class="w"> </span><span class="m">8</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">    </span>-Z<span class="w"> </span>5NM_pangenome.giraffe.gbz<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">    </span>-d<span class="w"> </span>5NM_pangenome.dist<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="w">    </span>-m<span class="w"> </span>5NM_pangenome.min<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="w">    </span>-f<span class="w"> </span>SRR10610805_1.fastq.gz<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="w">    </span>-f<span class="w"> </span>SRR10610805_2.fastq.gz<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="w">    </span>-b<span class="w"> </span>default<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="w">    </span>&gt;<span class="w"> </span>SRR10610805.5NM.gam
+</code></pre></div>
+</div>
+<p>The important options are:</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-p</code></td>
+<td>Print progress information</td>
+</tr>
+<tr>
+<td><code>-t 8</code></td>
+<td>Use 8 mapping threads</td>
+</tr>
+<tr>
+<td><code>-Z</code></td>
+<td>Giraffe GBZ graph</td>
+</tr>
+<tr>
+<td><code>-d</code></td>
+<td>Distance index</td>
+</tr>
+<tr>
+<td><code>-m</code></td>
+<td>Short-read minimizer index</td>
+</tr>
+<tr>
+<td><code>-f</code></td>
+<td>FASTQ input; specify twice for paired-end reads</td>
+</tr>
+<tr>
+<td><code>-b default</code></td>
+<td>Default short-read mapping preset</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition terminal">
+<p class="admonition-title">code</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>vg<span class="w"> </span>view<span class="w"> </span>--align-in<span class="w"> </span>SRR10610805.5NM.gam<span class="w"> </span><span class="p">|</span><span class="w"> </span>less
+</code></pre></div>
+</div>
+<hr>
+<h2 id="evaluate-the-mapping">Evaluate the mapping<a class="headerlink" href="#evaluate-the-mapping" title="Permanent link">¶</a></h2>
+<p><code>vg stats</code> can be used to obtain basic alignment statistics:</p>
+<div class="admonition terminal">
+<p class="admonition-title">code</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>vg<span class="w"> </span>stats<span class="w"> </span>-a<span class="w"> </span>SRR10610805.5NM.gam<span class="w"> </span>&gt;<span class="w"> </span>SRR10610805.5NM.stats
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>cat<span class="w"> </span>SRR10610805.5NM.stats
+</code></pre></div>
+</div>
+<p>Useful statistics include:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>Total alignments: 1139592
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>Total primary: 1139592
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>Total secondary: 0
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>Total aligned: 1139258
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>Total perfect: 1018448
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>Total gapless (softclips allowed): 1133796
+<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>Total paired: 1139592
+<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>Total properly paired: 1137260
+<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>Insertions: 8652 bp in 2525 read events
+<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>Deletions: 11447 bp in 5107 read events
+<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>Substitutions: 199048 bp in 199048 read events
+<a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a>Softclips: 670286 bp in 17479 read events
+</code></pre></div>
+<p>For paired-end data, a high proportion of reads should normally be properly paired, although the expected value depends on the sample and graph.</p>
+<hr>
+<h3 id="surjecting-alignments-to-a-linear-reference">Surjecting alignments to a linear reference<a class="headerlink" href="#surjecting-alignments-to-a-linear-reference" title="Permanent link">¶</a></h3>
+<p>If a BAM/CRAM/SAM representation is required, Giraffe can project alignments onto reference paths in the GBZ graph. To do this we first need to set a path to be the reference.</p>
+<div class="admonition terminal">
+<p class="admonition-title">code</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>vg<span class="w"> </span>paths<span class="w"> </span>--metadata<span class="w"> </span>-x<span class="w"> </span>5NM_pangenome.giraffe.gbz
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>vg<span class="w"> </span>gbwt<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="w">    </span>-Z<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="w">    </span>--set-tag<span class="w"> </span><span class="s2">"reference_samples=NC_003112.2"</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="w">    </span>--gbz-format<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="w">    </span>-g<span class="w"> </span>5NM_pangenome.giraffe.ref.gbz<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="w">    </span>5NM_pangenome.giraffe.gbz
+<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>
+<a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a>vg<span class="w"> </span>paths<span class="w"> </span>--metadata<span class="w"> </span>-x<span class="w"> </span>5NM_pangenome.giraffe.ref.gbz
+<a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a>
+<a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a>vg<span class="w"> </span>surject<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a><span class="w">    </span>-x<span class="w"> </span>5NM_pangenome.giraffe.ref.gbz<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a><span class="w">    </span>--into-path<span class="w"> </span>NC_003112.2#1#1<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-11-15" name="__codelineno-11-15" href="#__codelineno-11-15"></a><span class="w">    </span>--bam-output<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-11-16" name="__codelineno-11-16" href="#__codelineno-11-16"></a><span class="w">    </span>SRR10610805.5NM.gam<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-11-17" name="__codelineno-11-17" href="#__codelineno-11-17"></a><span class="w">    </span>&gt;<span class="w"> </span>SRR10610805.5NM.bam
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>module<span class="w"> </span>load<span class="w"> </span>SAMtools/1.21-GCC-12.3.0
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>samtools<span class="w"> </span>view<span class="w"> </span>SRR10610805.5NM.bam<span class="w"> </span><span class="p">|</span><span class="w"> </span>less
+</code></pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Left-aligning</p>
+<p>For best results, indel left-alignment is recommended (e.g. bamleftalign from FreeBayes, or vg surject --left-align in newer version), see methods section <a href="https://www.nature.com/articles/s41586-023-05896-x">Surjection to GRCh38 and indel realignment</a></p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Multiple Chromosomes</p>
+<p>To use a sample with multiple paths as the reference, collate those paths and input as a file <code>--into-paths &lt;ref_paths.txt&gt;</code></p>
+</div>
+<hr>
+<h3 id="is-this-any-better-than-just-using-a-linear-reference">Is this any better than just using a linear reference???<a class="headerlink" href="#is-this-any-better-than-just-using-a-linear-reference" title="Permanent link">¶</a></h3>
+<p>We can compare how a 'flat' reference performs compared to our alignments against the pangenome </p>
+<div class="admonition terminal">
+<p class="admonition-title">code</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>awk<span class="w"> </span><span class="s1">'/^&gt;/{if (seen++) exit} {print}'</span><span class="w">  </span>../5NM.fa<span class="w"> </span>&gt;<span class="w"> </span>NC_003112.2.fa
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>vg<span class="w"> </span>construct<span class="w"> </span>-r<span class="w"> </span>NC_003112.2.fa<span class="w"> </span>-m<span class="w"> </span><span class="m">1024</span><span class="w"> </span>&gt;<span class="w"> </span>NC_003112.2_flat.vg
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>vg<span class="w"> </span>convert<span class="w"> </span>-f<span class="w"> </span>NC_003112.2_flat.vg<span class="w"> </span>&gt;<span class="w"> </span>NC_003112.2_flat.gfa
+<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>
+<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>vg<span class="w"> </span>autoindex<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="w">    </span>--workflow<span class="w"> </span>giraffe<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="w">    </span>-g<span class="w"> </span>NC_003112.2_flat.gfa<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a><span class="w">    </span>-p<span class="w"> </span>NC_003112.2_flat
+</code></pre></div>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Alternative ways to make a pangenome with vg</p>
+<p><code>vg construct</code> can be used to make a pangenome from a reference <code>-r</code> with variants called against that reference <code>-v</code>. This won't represent any complexity that isn't already captured in your variant calls.</p>
+</div>
+<div class="admonition terminal">
+<p class="admonition-title">code</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>vg<span class="w"> </span>giraffe<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="w">    </span>-p<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">    </span>-t<span class="w"> </span><span class="m">8</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="w">    </span>-Z<span class="w"> </span>NC_003112.2_flat.giraffe.gbz<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="w">    </span>-d<span class="w"> </span>NC_003112.2_flat.dist<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="w">    </span>-m<span class="w"> </span>NC_003112.2_flat.min<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="w">    </span>-f<span class="w"> </span>SRR10610805_1.fastq.gz<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a><span class="w">    </span>-f<span class="w"> </span>SRR10610805_2.fastq.gz<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a><span class="w">    </span>-b<span class="w"> </span>default<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a><span class="w">    </span>&gt;<span class="w"> </span>SRR10610805.NC_003112.2.gam
+<a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a>
+<a id="__codelineno-14-12" name="__codelineno-14-12" href="#__codelineno-14-12"></a>vg<span class="w"> </span>stats<span class="w"> </span>-a<span class="w"> </span>SRR10610805.NC_003112.2.gam<span class="w"> </span>&gt;<span class="w"> </span>SRR10610805.NC_003112.2.stats
+<a id="__codelineno-14-13" name="__codelineno-14-13" href="#__codelineno-14-13"></a>cat<span class="w"> </span>SRR10610805.NC_003112.2.stats
+</code></pre></div>
+</div>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>5NM (pangenome)</th>
+<th>NC_003112.2 (single ref)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Total alignments</td>
+<td>1,139,592</td>
+<td>1,139,592</td>
+</tr>
+<tr>
+<td>Total primary</td>
+<td>1,139,592</td>
+<td>1,139,592</td>
+</tr>
+<tr>
+<td>Total secondary</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Total aligned</td>
+<td>1,139,258</td>
+<td>1,102,540</td>
+</tr>
+<tr>
+<td>Total perfect</td>
+<td>1,018,448</td>
+<td>315,227</td>
+</tr>
+<tr>
+<td>Total gapless (softclips allowed)</td>
+<td>1,133,796</td>
+<td>1,047,260</td>
+</tr>
+<tr>
+<td>Total paired</td>
+<td>1,139,592</td>
+<td>1,139,592</td>
+</tr>
+<tr>
+<td>Total properly paired</td>
+<td>1,137,260</td>
+<td>1,102,328</td>
+</tr>
+<tr>
+<td>Insertions</td>
+<td>8,652 bp / 2,525 events</td>
+<td>97,424 bp / 39,816 events</td>
+</tr>
+<tr>
+<td>Deletions</td>
+<td>11,447 bp / 5,107 events</td>
+<td>120,580 bp / 42,322 events</td>
+</tr>
+<tr>
+<td>Substitutions</td>
+<td>199,048 bp</td>
+<td>3,011,833 bp</td>
+</tr>
+<tr>
+<td>Softclips</td>
+<td>670,286 bp / 17,479 events</td>
+<td>5,874,728 bp / 145,895 events</td>
+</tr>
+<tr>
+<td>Total time</td>
+<td>1,063.94 s</td>
+<td>384.855 s</td>
+</tr>
+<tr>
+<td>Speed</td>
+<td>1,071.11 reads/s</td>
+<td>2,961.1 reads/s</td>
+</tr>
+</tbody>
+</table>
+<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">¶</a></h2>
+<p>The recommended short-read workflow is:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>PGGB GFA
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>   │
+<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>   ▼
+<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>vg autoindex --workflow giraffe
+<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>   │
+<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>   ├── GBZ graph
+<a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a>   ├── distance index
+<a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a>   └── minimizer index
+<a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a>          │
+<a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a>          ▼
+<a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a>   vg giraffe
+<a id="__codelineno-15-12" name="__codelineno-15-12" href="#__codelineno-15-12"></a>          │
+<a id="__codelineno-15-13" name="__codelineno-15-13" href="#__codelineno-15-13"></a>          ├── GAM
+<a id="__codelineno-15-14" name="__codelineno-15-14" href="#__codelineno-15-14"></a>          ▼
+<a id="__codelineno-15-15" name="__codelineno-15-15" href="#__codelineno-15-15"></a>   vg surject
+<a id="__codelineno-15-16" name="__codelineno-15-16" href="#__codelineno-15-16"></a>          └── BAM/CRAM
+</code></pre></div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden="">
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer">
+        
+          
+          <a href="../../6_Variant_calling/" class="md-footer__link md-footer__link--prev" aria-label="Previous: 6. Variant calling">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                6. Variant calling
+              </div>
+            </div>
+          </a>
+        
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Pangenome Graphs workshop material is licensed under a <a rel="noopener" target="_blank" href="https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html">GNU General Public License v2.0</a>
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tracking", "navigation.sections", "navigation.expand", "navigation.top", "navigation.footer", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>
